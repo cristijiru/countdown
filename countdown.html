@@ -1,0 +1,1267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Year Countdown</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f5f5f7;
+            --text-primary: #1d1d1f;
+            --text-secondary: #86868b;
+            --accent: #0071e3;
+            --accent-secondary: #147ce5;
+            --card-bg: rgba(255, 255, 255, 0.8);
+            --card-border: rgba(0, 0, 0, 0.1);
+            --particle-color: rgba(0, 113, 227, 0.3);
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #000000;
+            --bg-secondary: #1d1d1f;
+            --text-primary: #f5f5f7;
+            --text-secondary: #86868b;
+            --accent: #2997ff;
+            --accent-secondary: #0077ed;
+            --card-bg: rgba(29, 29, 31, 0.8);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --particle-color: rgba(41, 151, 255, 0.3);
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding-bottom: 15vh;
+            background: var(--bg-primary);
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+            color: var(--text-primary);
+            overflow: hidden;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            width: 70px;
+            height: 36px;
+            background: var(--bg-secondary);
+            border-radius: 18px;
+            border: 1px solid var(--card-border);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 4px 8px;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.05);
+        }
+
+        .toggle-icon {
+            font-size: 16px;
+            z-index: 1;
+            transition: opacity 0.3s ease;
+        }
+
+        .sun-icon {
+            opacity: 1;
+        }
+
+        .moon-icon {
+            opacity: 0.4;
+        }
+
+        [data-theme="dark"] .sun-icon {
+            opacity: 0.4;
+        }
+
+        [data-theme="dark"] .moon-icon {
+            opacity: 1;
+        }
+
+        .toggle-thumb {
+            position: absolute;
+            left: 4px;
+            width: 28px;
+            height: 28px;
+            background: var(--accent);
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+        }
+
+        [data-theme="dark"] .toggle-thumb {
+            transform: translateX(34px);
+        }
+
+        .lang-toggle {
+            position: fixed;
+            top: 2rem;
+            right: 7rem;
+            height: 36px;
+            background: var(--bg-secondary);
+            border-radius: 18px;
+            border: 1px solid var(--card-border);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            padding: 4px;
+            gap: 0;
+            transition: all 0.3s ease;
+        }
+
+        .lang-toggle:hover {
+            transform: scale(1.05);
+        }
+
+        .lang-option {
+            padding: 0 12px;
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 14px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            color: var(--text-secondary);
+        }
+
+        .lang-option.active {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+            letter-spacing: -0.02em;
+        }
+
+        .main-title {
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 3rem;
+            letter-spacing: -0.03em;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        .countdown {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .time-box {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 2rem 2.5rem;
+            min-width: 130px;
+            text-align: center;
+            border: 1px solid var(--card-border);
+            animation: float 4s ease-in-out infinite;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .time-box:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .time-box:nth-child(1) { animation-delay: 0s; }
+        .time-box:nth-child(2) { animation-delay: 0.15s; }
+        .time-box:nth-child(3) { animation-delay: 0.3s; }
+        .time-box:nth-child(4) { animation-delay: 0.45s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .time-box:hover {
+            animation-play-state: paused;
+        }
+
+        .number {
+            font-size: 3.5rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: var(--text-primary);
+            font-variant-numeric: tabular-nums;
+            transition: color 0.3s ease;
+        }
+
+        .label {
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-top: 0.5rem;
+            color: var(--text-secondary);
+            transition: color 0.3s ease;
+        }
+
+
+        .city-skyline {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 180px;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .city-skyline svg {
+            width: 100%;
+            height: 100%;
+            fill: var(--text-primary);
+            opacity: 0.08;
+            transition: fill 0.3s ease, opacity 0.3s ease;
+        }
+
+        [data-theme="dark"] .city-skyline svg {
+            opacity: 0.15;
+        }
+
+        .city-skyline.lit svg {
+            opacity: 0.25;
+            transition: opacity 0.3s ease;
+        }
+
+        [data-theme="dark"] .city-skyline.lit svg {
+            opacity: 0.4;
+        }
+
+        .city-lights {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 180px;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .window-light {
+            position: absolute;
+            width: 3px;
+            height: 4px;
+            background: linear-gradient(to bottom, #fff8e1, #ffdd77);
+            border-radius: 1px;
+            opacity: 0;
+            animation: twinkle 4s ease-in-out infinite;
+            box-shadow: 0 0 3px #ffdd77;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0; }
+            30%, 70% { opacity: 0.4; }
+            50% { opacity: 0.6; }
+        }
+
+        [data-theme="dark"] .window-light {
+            opacity: 0.7;
+            box-shadow: 0 0 5px #ffdd77, 0 0 10px rgba(255, 200, 100, 0.4);
+            animation: twinkleDark 3s ease-in-out infinite;
+        }
+
+        @keyframes twinkleDark {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.1); }
+        }
+
+        /* Lit up state during fireworks */
+        .city-lights.lit .window-light {
+            opacity: 1 !important;
+            animation: none !important;
+            box-shadow: 0 0 8px #ffdd77, 0 0 15px #ffaa44;
+        }
+
+        /* Street lights on poles */
+        .street-light {
+            position: absolute;
+            bottom: 8px;
+            width: 6px;
+            height: 6px;
+            background: #ffeebb;
+            border-radius: 50%;
+            opacity: 0;
+            box-shadow: 0 0 8px #ffdd88, 0 0 15px rgba(255, 220, 130, 0.5);
+        }
+
+        .street-light::before {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 18px;
+            background: var(--text-primary);
+            opacity: 0.15;
+        }
+
+        .street-light::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 10px;
+            height: 15px;
+            background: radial-gradient(ellipse at top, rgba(255, 220, 130, 0.3) 0%, transparent 70%);
+            opacity: 0;
+        }
+
+        [data-theme="dark"] .street-light {
+            opacity: 0.9;
+            box-shadow: 0 0 10px #ffdd88, 0 0 20px rgba(255, 220, 130, 0.6);
+        }
+
+        [data-theme="dark"] .street-light::before {
+            opacity: 0.25;
+        }
+
+        [data-theme="dark"] .street-light::after {
+            opacity: 1;
+        }
+
+        .city-lights.lit .street-light {
+            opacity: 1;
+            box-shadow: 0 0 12px #ffee99, 0 0 25px rgba(255, 230, 150, 0.8);
+        }
+
+        .city-lights.lit .street-light::after {
+            opacity: 1;
+            background: radial-gradient(ellipse at top, rgba(255, 230, 150, 0.5) 0%, transparent 70%);
+        }
+
+        /* Night sky with moon and stars */
+        .night-sky {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+
+        .night-sky.visible {
+            opacity: 1;
+        }
+
+        .moon {
+            position: absolute;
+            top: 8%;
+            left: 8%;
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle at 35% 35%, #fffef0 0%, #fff9c4 50%, #ffecb3 100%);
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(255, 249, 196, 0.5), 0 0 60px rgba(255, 236, 179, 0.3), 0 0 100px rgba(255, 236, 179, 0.2);
+        }
+
+        .moon::before {
+            content: '';
+            position: absolute;
+            top: 10%;
+            left: 15%;
+            width: 12px;
+            height: 12px;
+            background: rgba(200, 190, 150, 0.3);
+            border-radius: 50%;
+        }
+
+        .moon::after {
+            content: '';
+            position: absolute;
+            top: 40%;
+            left: 55%;
+            width: 8px;
+            height: 8px;
+            background: rgba(200, 190, 150, 0.2);
+            border-radius: 50%;
+        }
+
+        .star {
+            position: absolute;
+            background: #fff;
+            border-radius: 50%;
+            opacity: 0;
+            animation: starTwinkle 2s ease-in-out infinite;
+        }
+
+        [data-theme="dark"] .star {
+            opacity: 1;
+        }
+
+        @keyframes starTwinkle {
+            0%, 100% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        .moon {
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        [data-theme="dark"] .moon {
+            opacity: 1;
+        }
+
+        /* Cozy warm glow at the bottom */
+        .city-glow {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(to top, rgba(255, 200, 100, 0.08) 0%, transparent 100%);
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        [data-theme="dark"] .city-glow {
+            background: linear-gradient(to top, rgba(255, 180, 80, 0.15) 0%, transparent 100%);
+        }
+
+        .city-glow.visible {
+            opacity: 1;
+        }
+
+        .fireworks {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .firework {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            animation: explode 1.5s ease-out forwards;
+            filter: blur(0.5px);
+        }
+
+        @keyframes explode {
+            0% { transform: scale(0); opacity: 1; }
+            50% { opacity: 1; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+
+        .spark {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: spark 1.4s ease-out forwards;
+            box-shadow: 0 0 6px currentColor, 0 0 12px currentColor;
+        }
+
+        @keyframes spark {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            70% { opacity: 0.8; }
+            100% { transform: translate(var(--dx), var(--dy)) scale(0); opacity: 0; }
+        }
+
+        .spark-trail {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            animation: sparkTrail 0.8s ease-out forwards;
+            opacity: 0.6;
+        }
+
+        @keyframes sparkTrail {
+            0% { transform: translate(0, 0) scale(1); opacity: 0.6; }
+            100% { transform: translate(var(--dx), var(--dy)) scale(0); opacity: 0; }
+        }
+
+        .ring {
+            position: absolute;
+            border-radius: 50%;
+            border: 3px solid;
+            animation: ring 1.2s ease-out forwards;
+            box-shadow: 0 0 20px currentColor, inset 0 0 20px currentColor;
+        }
+
+        @keyframes ring {
+            0% { width: 0; height: 0; opacity: 1; }
+            100% { width: 150px; height: 150px; opacity: 0; margin-left: -75px; margin-top: -75px; }
+        }
+
+        .starburst {
+            position: absolute;
+            width: 6px;
+            height: 20px;
+            animation: starburst 1s ease-out forwards;
+            transform-origin: center bottom;
+        }
+
+        @keyframes starburst {
+            0% { transform: rotate(var(--angle)) translateY(0) scaleY(0); opacity: 1; }
+            30% { transform: rotate(var(--angle)) translateY(-60px) scaleY(1); opacity: 1; }
+            100% { transform: rotate(var(--angle)) translateY(-120px) scaleY(0.3); opacity: 0; }
+        }
+
+        .glitter {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            animation: glitter 2s ease-out forwards;
+            box-shadow: 0 0 4px currentColor;
+        }
+
+        @keyframes glitter {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            25% { opacity: 0.3; }
+            50% { opacity: 1; }
+            75% { opacity: 0.3; }
+            100% { transform: translate(var(--dx), calc(var(--dy) + 100px)) scale(0); opacity: 0; }
+        }
+
+        .rocket {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            animation: rocket var(--duration) ease-out forwards;
+            box-shadow: 0 0 10px currentColor, 0 10px 20px currentColor;
+        }
+
+        @keyframes rocket {
+            0% { transform: translateY(0); opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(var(--travel)); opacity: 0; }
+        }
+
+        .rocket-trail {
+            position: absolute;
+            width: 3px;
+            height: 30px;
+            background: linear-gradient(to top, transparent, currentColor);
+            animation: rocketTrail var(--duration) ease-out forwards;
+            opacity: 0.5;
+        }
+
+        @keyframes rocketTrail {
+            0% { transform: translateY(0); opacity: 0.5; height: 0; }
+            50% { height: 40px; opacity: 0.5; }
+            100% { transform: translateY(var(--travel)); opacity: 0; height: 20px; }
+        }
+
+        .fireworks-btn {
+            position: fixed;
+            top: 2rem;
+            right: 13.5rem;
+            padding: 0.5rem 1rem;
+            height: 36px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            border: 1px solid var(--card-border);
+            border-radius: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            z-index: 15;
+        }
+
+        .fireworks-btn:hover {
+            transform: scale(1.05);
+            background: var(--accent);
+            color: #fff;
+        }
+
+        .fireworks-btn:active {
+            transform: scale(0.98);
+        }
+
+        @media (max-width: 600px) {
+            .main-title { font-size: 2.5rem; }
+            .time-box { padding: 1.5rem 2rem; min-width: 100px; }
+            .number { font-size: 2.5rem; }
+            .city-skyline { height: 120px; }
+            .city-lights { height: 120px; }
+            .fireworks-btn { right: 1rem; top: 6rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="night-sky" id="nightSky">
+        <div class="moon"></div>
+    </div>
+    <div class="city-glow" id="cityGlow"></div>
+
+    <button class="fireworks-btn" id="fireworksBtn">Fireworks</button>
+
+    <div class="lang-toggle" id="langToggle">
+        <span class="lang-option active" data-lang="en">EN</span>
+        <span class="lang-option" data-lang="ro">RO</span>
+    </div>
+
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <span class="toggle-icon sun-icon">&#9728;</span>
+        <span class="toggle-icon moon-icon">&#9790;</span>
+        <div class="toggle-thumb"></div>
+    </button>
+
+    <h1 id="subtitle">Countdown to</h1>
+    <div class="main-title" id="mainTitle">New Year 2026</div>
+
+    <div class="countdown">
+        <div class="time-box">
+            <div class="number" id="days">000</div>
+            <div class="label" id="labelDays">Days</div>
+        </div>
+        <div class="time-box">
+            <div class="number" id="hours">00</div>
+            <div class="label" id="labelHours">Hours</div>
+        </div>
+        <div class="time-box">
+            <div class="number" id="minutes">00</div>
+            <div class="label" id="labelMinutes">Minutes</div>
+        </div>
+        <div class="time-box">
+            <div class="number" id="seconds">00</div>
+            <div class="label" id="labelSeconds">Seconds</div>
+        </div>
+    </div>
+
+    <div class="city-skyline">
+        <svg viewBox="0 0 1200 180" preserveAspectRatio="xMidYMax slice">
+            <!-- European city skyline silhouette -->
+
+            <!-- Left side buildings -->
+            <rect x="0" y="130" width="60" height="50"/>
+            <polygon points="0,130 30,105 60,130"/>
+
+            <!-- Townhouse block -->
+            <rect x="65" y="120" width="45" height="60"/>
+            <polygon points="65,120 87,95 110,120"/>
+            <rect x="115" y="125" width="40" height="55"/>
+            <polygon points="115,125 135,100 155,125"/>
+
+            <!-- Bridge section 1 -->
+            <rect x="160" y="155" width="80" height="25"/>
+            <ellipse cx="180" cy="155" rx="12" ry="15"/>
+            <ellipse cx="220" cy="155" rx="12" ry="15"/>
+
+            <!-- Romanian Athenaeum style building -->
+            <rect x="245" y="100" width="100" height="80"/>
+            <!-- Dome -->
+            <ellipse cx="295" cy="100" rx="40" ry="25"/>
+            <ellipse cx="295" cy="85" rx="25" ry="18"/>
+            <ellipse cx="295" cy="75" rx="12" ry="10"/>
+            <!-- Columns -->
+            <rect x="255" y="110" width="6" height="50"/>
+            <rect x="270" y="110" width="6" height="50"/>
+            <rect x="285" y="110" width="6" height="50"/>
+            <rect x="300" y="110" width="6" height="50"/>
+            <rect x="315" y="110" width="6" height="50"/>
+            <rect x="330" y="110" width="6" height="50"/>
+            <!-- Pediment -->
+            <polygon points="250,110 295,85 340,110"/>
+
+            <!-- Connecting buildings -->
+            <rect x="350" y="125" width="50" height="55"/>
+            <polygon points="350,125 375,100 400,125"/>
+
+            <!-- Notre-Dame style Cathedral -->
+            <rect x="405" y="90" width="120" height="90"/>
+            <!-- Twin towers -->
+            <rect x="405" y="50" width="30" height="40"/>
+            <rect x="495" y="50" width="30" height="40"/>
+            <!-- Tower tops -->
+            <polygon points="405,50 420,25 435,50"/>
+            <polygon points="495,50 510,25 525,50"/>
+            <!-- Central spire -->
+            <polygon points="455,90 465,30 475,90"/>
+            <!-- Rose window -->
+            <circle cx="465" cy="120" r="20" fill-opacity="0.3"/>
+            <!-- Doorways -->
+            <rect x="420" y="150" width="20" height="30" rx="10" fill-opacity="0.3"/>
+            <rect x="455" y="145" width="25" height="35" rx="12" fill-opacity="0.3"/>
+            <rect x="495" y="150" width="20" height="30" rx="10" fill-opacity="0.3"/>
+            <!-- Flying buttresses hint -->
+            <polygon points="400,130 405,130 405,160 395,160"/>
+            <polygon points="530,130 525,130 525,160 535,160"/>
+
+            <!-- More townhouses -->
+            <rect x="540" y="130" width="35" height="50"/>
+            <polygon points="540,130 557,110 575,130"/>
+            <rect x="580" y="120" width="40" height="60"/>
+            <polygon points="580,120 600,95 620,120"/>
+
+            <!-- Bridge section 2 with tower -->
+            <rect x="625" y="155" width="100" height="25"/>
+            <ellipse cx="650" cy="155" rx="15" ry="18"/>
+            <ellipse cx="700" cy="155" rx="15" ry="18"/>
+            <!-- Bridge tower -->
+            <rect x="665" y="110" width="30" height="45"/>
+            <polygon points="665,110 680,85 695,110"/>
+            <rect x="675" y="90" width="10" height="20"/>
+
+            <!-- Opera House / Grand Theater -->
+            <rect x="730" y="105" width="90" height="75"/>
+            <!-- Mansard roof -->
+            <polygon points="730,105 775,70 820,105"/>
+            <!-- Small dome on top -->
+            <ellipse cx="775" cy="70" rx="15" ry="12"/>
+            <!-- Decorative top -->
+            <rect x="770" y="55" width="10" height="15"/>
+            <!-- Columns -->
+            <rect x="740" y="120" width="5" height="40"/>
+            <rect x="755" y="120" width="5" height="40"/>
+            <rect x="770" y="120" width="5" height="40"/>
+            <rect x="785" y="120" width="5" height="40"/>
+            <rect x="800" y="120" width="5" height="40"/>
+            <rect x="815" y="120" width="5" height="40"/>
+
+            <!-- Residential block -->
+            <rect x="825" y="115" width="55" height="65"/>
+            <polygon points="825,115 852,90 880,115"/>
+            <rect x="885" y="125" width="40" height="55"/>
+            <polygon points="885,125 905,105 925,125"/>
+
+            <!-- Clock Tower / Belfry -->
+            <rect x="930" y="70" width="35" height="110"/>
+            <polygon points="930,70 947,35 965,70"/>
+            <circle cx="947" cy="95" r="12" fill-opacity="0.3"/>
+            <rect x="942" y="40" width="10" height="30"/>
+
+            <!-- Parliament style building -->
+            <rect x="970" y="100" width="110" height="80"/>
+            <!-- Central dome -->
+            <ellipse cx="1025" cy="100" rx="30" ry="22"/>
+            <ellipse cx="1025" cy="85" rx="18" ry="15"/>
+            <!-- Small towers -->
+            <rect x="975" y="85" width="15" height="15"/>
+            <polygon points="975,85 982,70 990,85"/>
+            <rect x="1060" y="85" width="15" height="15"/>
+            <polygon points="1060,85 1067,70 1075,85"/>
+
+            <!-- End buildings -->
+            <rect x="1085" y="120" width="45" height="60"/>
+            <polygon points="1085,120 1107,95 1130,120"/>
+            <rect x="1135" y="130" width="40" height="50"/>
+            <polygon points="1135,130 1155,110 1175,130"/>
+            <rect x="1180" y="125" width="20" height="55"/>
+
+            <!-- Ground/riverbank -->
+            <rect x="0" y="175" width="1200" height="5"/>
+        </svg>
+    </div>
+    <div class="city-lights" id="cityLights"></div>
+
+    <div class="fireworks" id="fireworks"></div>
+
+    <script>
+        // Dynamic year calculation
+        const targetYear = new Date().getFullYear() + 1;
+
+        // Create twinkling window lights for the city
+        // Windows centered within each building's rectangular body
+        const cityLights = document.getElementById('cityLights');
+        const windowPositions = [
+            // Left building (center: 2.5%)
+            {x: 1.5, y: 25}, {x: 3.5, y: 25},
+            {x: 1.5, y: 40}, {x: 3.5, y: 40},
+
+            // Townhouse 1 (center: 7.3%)
+            {x: 6.3, y: 28}, {x: 8.3, y: 28},
+            {x: 6.3, y: 45}, {x: 8.3, y: 45},
+
+            // Townhouse 2 (center: 11.25%)
+            {x: 10.25, y: 25}, {x: 12.25, y: 25},
+            {x: 10.25, y: 42}, {x: 12.25, y: 42},
+
+            // Athenaeum (center: 24.6%)
+            {x: 22.1, y: 40}, {x: 24.6, y: 40}, {x: 27.1, y: 40},
+            {x: 22.1, y: 55}, {x: 24.6, y: 55}, {x: 27.1, y: 55},
+            {x: 22.1, y: 70}, {x: 24.6, y: 70}, {x: 27.1, y: 70},
+
+            // Connecting building (center: 31.25%)
+            {x: 30.25, y: 28}, {x: 32.25, y: 28},
+            {x: 30.25, y: 45}, {x: 32.25, y: 45},
+
+            // Notre-Dame towers (left center: 35%, right center: 42.5%)
+            {x: 35, y: 100}, {x: 35, y: 115},
+            {x: 42.5, y: 100}, {x: 42.5, y: 115},
+
+            // Notre-Dame main body (center: 38.75%)
+            {x: 36.25, y: 50}, {x: 38.75, y: 50}, {x: 41.25, y: 50},
+            {x: 36.25, y: 65}, {x: 38.75, y: 65}, {x: 41.25, y: 65},
+
+            // Townhouse after cathedral 1 (center: 46.5%)
+            {x: 45.5, y: 28}, {x: 47.5, y: 28},
+            {x: 45.5, y: 45}, {x: 47.5, y: 45},
+
+            // Townhouse after cathedral 2 (center: 50%)
+            {x: 49, y: 32}, {x: 51, y: 32},
+            {x: 49, y: 50}, {x: 51, y: 50},
+
+            // Bridge tower (center: 56.7%)
+            {x: 55.7, y: 32}, {x: 57.7, y: 32},
+            {x: 55.7, y: 48}, {x: 57.7, y: 48},
+
+            // Opera House (center: 64.6%)
+            {x: 62.1, y: 42}, {x: 64.6, y: 42}, {x: 67.1, y: 42},
+            {x: 62.1, y: 58}, {x: 64.6, y: 58}, {x: 67.1, y: 58},
+
+            // Residential block 1 (center: 71%)
+            {x: 70, y: 35}, {x: 72, y: 35},
+            {x: 70, y: 52}, {x: 72, y: 52},
+
+            // Residential block 2 (center: 75.4%)
+            {x: 74.4, y: 28}, {x: 76.4, y: 28},
+            {x: 74.4, y: 45}, {x: 76.4, y: 45},
+
+            // Clock tower (center: 79%)
+            {x: 79, y: 75}, {x: 79, y: 92},
+
+            // Parliament (center: 85.4%)
+            {x: 82.9, y: 42}, {x: 85.4, y: 42}, {x: 87.9, y: 42},
+            {x: 82.9, y: 58}, {x: 85.4, y: 58}, {x: 87.9, y: 58},
+            {x: 82.9, y: 72}, {x: 85.4, y: 72}, {x: 87.9, y: 72},
+
+            // End building 1 (center: 92.3%)
+            {x: 91.3, y: 32}, {x: 93.3, y: 32},
+            {x: 91.3, y: 48}, {x: 93.3, y: 48},
+
+            // End building 2 (center: 96.25%)
+            {x: 95.25, y: 28}, {x: 97.25, y: 28},
+            {x: 95.25, y: 42}, {x: 97.25, y: 42},
+        ];
+
+        windowPositions.forEach((pos, i) => {
+            const light = document.createElement('div');
+            light.className = 'window-light';
+            light.style.left = pos.x + '%';
+            light.style.bottom = pos.y + 'px';
+            light.style.animationDelay = (Math.random() * 5) + 's';
+            // Vary the size slightly for depth
+            const size = 2 + Math.random() * 2;
+            light.style.width = size + 'px';
+            light.style.height = (size * 1.3) + 'px';
+            cityLights.appendChild(light);
+        });
+
+        // Create street lights on poles between buildings
+        const streetLightPositions = [13, 44.5, 60.5, 77.5, 90.5];
+        streetLightPositions.forEach(x => {
+            const streetLight = document.createElement('div');
+            streetLight.className = 'street-light';
+            streetLight.style.left = x + '%';
+            cityLights.appendChild(streetLight);
+        });
+
+        // Create stars for the night sky
+        const nightSky = document.getElementById('nightSky');
+        for (let i = 0; i < 120; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 60 + '%'; // Keep stars in upper portion
+            const size = 1 + Math.random() * 2;
+            star.style.width = size + 'px';
+            star.style.height = size + 'px';
+            star.style.animationDelay = Math.random() * 3 + 's';
+            nightSky.appendChild(star);
+        }
+
+        // Translations
+        const translations = {
+            en: {
+                subtitle: 'Countdown to',
+                mainTitle: `New Year ${targetYear}`,
+                days: 'Days',
+                hours: 'Hours',
+                minutes: 'Minutes',
+                seconds: 'Seconds',
+                happyNewYear: 'Happy New Year!'
+            },
+            ro: {
+                subtitle: 'Numărătoare inversă până la',
+                mainTitle: `Anul Nou ${targetYear}`,
+                days: 'Zile',
+                hours: 'Ore',
+                minutes: 'Minute',
+                seconds: 'Secunde',
+                happyNewYear: 'La mulți ani!'
+            }
+        };
+
+        let currentLang = localStorage.getItem('lang') || 'en';
+
+        function updateLanguage(lang) {
+            currentLang = lang;
+            const t = translations[lang];
+
+            document.getElementById('subtitle').textContent = t.subtitle;
+            document.getElementById('mainTitle').textContent = t.mainTitle;
+            document.getElementById('labelDays').textContent = t.days;
+            document.getElementById('labelHours').textContent = t.hours;
+            document.getElementById('labelMinutes').textContent = t.minutes;
+            document.getElementById('labelSeconds').textContent = t.seconds;
+
+            document.querySelectorAll('.lang-option').forEach(opt => {
+                opt.classList.toggle('active', opt.dataset.lang === lang);
+            });
+
+            localStorage.setItem('lang', lang);
+        }
+
+        // Language toggle
+        const langToggle = document.getElementById('langToggle');
+        langToggle.addEventListener('click', (e) => {
+            if (e.target.classList.contains('lang-option')) {
+                updateLanguage(e.target.dataset.lang);
+            }
+        });
+
+        // Initialize language
+        updateLanguage(currentLang);
+
+        // Theme toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+
+        // Check for saved theme or system preference
+        const savedTheme = localStorage.getItem('theme');
+        const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+        if (savedTheme) {
+            html.setAttribute('data-theme', savedTheme);
+        } else if (systemDark) {
+            html.setAttribute('data-theme', 'dark');
+        }
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+            if (newTheme === 'light') {
+                html.removeAttribute('data-theme');
+            } else {
+                html.setAttribute('data-theme', 'dark');
+            }
+
+            localStorage.setItem('theme', newTheme);
+        });
+
+        // Countdown logic - dynamically target next January 1st
+        const targetDate = new Date(targetYear, 0, 1, 0, 0, 0).getTime();
+
+        let hasReachedZero = false;
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const difference = targetDate - now;
+
+            if (difference > 0) {
+                const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+                document.getElementById('days').textContent = String(days).padStart(2, '0');
+                document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+                document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+                document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+            } else {
+                if (!hasReachedZero) {
+                    hasReachedZero = true;
+                    launchFireworks();
+                }
+                document.querySelector('.main-title').textContent = translations[currentLang].happyNewYear;
+                document.getElementById('days').textContent = '00';
+                document.getElementById('hours').textContent = '00';
+                document.getElementById('minutes').textContent = '00';
+                document.getElementById('seconds').textContent = '00';
+            }
+        }
+
+        function launchFireworks() {
+            const fireworks = document.getElementById('fireworks');
+            const citySkyline = document.querySelector('.city-skyline');
+            const cityLightsEl = document.getElementById('cityLights');
+
+            // Switch to dark mode for the fireworks show
+            const html = document.documentElement;
+            const wasDarkMode = html.getAttribute('data-theme') === 'dark';
+            html.setAttribute('data-theme', 'dark');
+            localStorage.setItem('theme', 'dark');
+
+            // Show the night sky with moon and stars
+            const nightSkyEl = document.getElementById('nightSky');
+            const cityGlow = document.getElementById('cityGlow');
+
+            nightSkyEl.classList.add('visible');
+            cityGlow.classList.add('visible');
+
+            // Light up the city
+            citySkyline.classList.add('lit');
+            cityLightsEl.classList.add('lit');
+
+            // Turn off lights after fireworks end (around 12 seconds), keep dark mode
+            setTimeout(() => {
+                citySkyline.classList.remove('lit');
+                cityLightsEl.classList.remove('lit');
+                nightSkyEl.classList.remove('visible');
+                cityGlow.classList.remove('visible');
+            }, 12000);
+            const colors = [
+                ['#ff0044', '#ff4477', '#ffaacc'],
+                ['#00ff88', '#44ffaa', '#aaffdd'],
+                ['#0088ff', '#44aaff', '#aaddff'],
+                ['#ffaa00', '#ffcc44', '#ffeeaa'],
+                ['#ff00ff', '#ff66ff', '#ffaaff'],
+                ['#00ffff', '#66ffff', '#aaffff'],
+                ['#ffff00', '#ffff66', '#ffffaa'],
+            ];
+
+            function getRandomColors() {
+                return colors[Math.floor(Math.random() * colors.length)];
+            }
+
+            function createRocket(startX, endX, endY, delay) {
+                setTimeout(() => {
+                    const palette = getRandomColors();
+                    const color = palette[0];
+                    const duration = 0.6 + Math.random() * 0.4;
+                    const travel = -(window.innerHeight - endY);
+
+                    // Rocket
+                    const rocket = document.createElement('div');
+                    rocket.className = 'rocket';
+                    rocket.style.left = startX + 'px';
+                    rocket.style.bottom = '0';
+                    rocket.style.color = color;
+                    rocket.style.background = color;
+                    rocket.style.setProperty('--duration', duration + 's');
+                    rocket.style.setProperty('--travel', travel + 'px');
+                    fireworks.appendChild(rocket);
+                    setTimeout(() => rocket.remove(), duration * 1000);
+
+                    // Rocket trail
+                    const trail = document.createElement('div');
+                    trail.className = 'rocket-trail';
+                    trail.style.left = (startX - 1) + 'px';
+                    trail.style.bottom = '0';
+                    trail.style.color = color;
+                    trail.style.setProperty('--duration', duration + 's');
+                    trail.style.setProperty('--travel', travel + 'px');
+                    fireworks.appendChild(trail);
+                    setTimeout(() => trail.remove(), duration * 1000);
+
+                    // Explosion after rocket reaches destination
+                    setTimeout(() => {
+                        createExplosion(endX, endY, palette);
+                    }, duration * 900);
+                }, delay);
+            }
+
+            function createExplosion(x, y, palette) {
+                const type = Math.floor(Math.random() * 4);
+                const color = palette[0];
+
+                // Main firework burst
+                const firework = document.createElement('div');
+                firework.className = 'firework';
+                firework.style.left = x + 'px';
+                firework.style.top = y + 'px';
+                firework.style.background = `radial-gradient(circle, ${palette[1]} 0%, ${color} 50%, transparent 70%)`;
+                firework.style.boxShadow = `0 0 30px ${color}, 0 0 60px ${color}`;
+                fireworks.appendChild(firework);
+                setTimeout(() => firework.remove(), 1500);
+
+                if (type === 0) {
+                    // Classic burst with trails
+                    for (let j = 0; j < 20; j++) {
+                        const angle = (j / 20) * Math.PI * 2;
+                        const velocity = 80 + Math.random() * 120;
+                        const dx = Math.cos(angle) * velocity;
+                        const dy = Math.sin(angle) * velocity;
+
+                        const spark = document.createElement('div');
+                        spark.className = 'spark';
+                        spark.style.left = x + 'px';
+                        spark.style.top = y + 'px';
+                        spark.style.background = palette[Math.floor(Math.random() * palette.length)];
+                        spark.style.color = color;
+                        spark.style.setProperty('--dx', dx + 'px');
+                        spark.style.setProperty('--dy', dy + 'px');
+                        fireworks.appendChild(spark);
+                        setTimeout(() => spark.remove(), 1400);
+
+                        // Spark trails
+                        for (let t = 0; t < 3; t++) {
+                            setTimeout(() => {
+                                const sparkTrail = document.createElement('div');
+                                sparkTrail.className = 'spark-trail';
+                                sparkTrail.style.left = x + 'px';
+                                sparkTrail.style.top = y + 'px';
+                                sparkTrail.style.background = palette[2];
+                                sparkTrail.style.setProperty('--dx', (dx * (0.3 + t * 0.2)) + 'px');
+                                sparkTrail.style.setProperty('--dy', (dy * (0.3 + t * 0.2)) + 'px');
+                                fireworks.appendChild(sparkTrail);
+                                setTimeout(() => sparkTrail.remove(), 800);
+                            }, t * 50);
+                        }
+                    }
+                } else if (type === 1) {
+                    // Ring explosion
+                    const ring = document.createElement('div');
+                    ring.className = 'ring';
+                    ring.style.left = x + 'px';
+                    ring.style.top = y + 'px';
+                    ring.style.borderColor = color;
+                    ring.style.color = color;
+                    fireworks.appendChild(ring);
+                    setTimeout(() => ring.remove(), 1200);
+
+                    // Inner sparks
+                    for (let j = 0; j < 16; j++) {
+                        const angle = (j / 16) * Math.PI * 2;
+                        const velocity = 60 + Math.random() * 40;
+                        const spark = document.createElement('div');
+                        spark.className = 'spark';
+                        spark.style.left = x + 'px';
+                        spark.style.top = y + 'px';
+                        spark.style.background = palette[1];
+                        spark.style.color = palette[1];
+                        spark.style.setProperty('--dx', Math.cos(angle) * velocity + 'px');
+                        spark.style.setProperty('--dy', Math.sin(angle) * velocity + 'px');
+                        fireworks.appendChild(spark);
+                        setTimeout(() => spark.remove(), 1400);
+                    }
+                } else if (type === 2) {
+                    // Starburst
+                    for (let j = 0; j < 12; j++) {
+                        const angle = (j / 12) * 360;
+                        const star = document.createElement('div');
+                        star.className = 'starburst';
+                        star.style.left = x + 'px';
+                        star.style.top = y + 'px';
+                        star.style.background = `linear-gradient(to top, ${color}, ${palette[1]}, transparent)`;
+                        star.style.setProperty('--angle', angle + 'deg');
+                        fireworks.appendChild(star);
+                        setTimeout(() => star.remove(), 1000);
+                    }
+
+                    // Glitter
+                    for (let j = 0; j < 30; j++) {
+                        setTimeout(() => {
+                            const glitter = document.createElement('div');
+                            glitter.className = 'glitter';
+                            glitter.style.left = x + 'px';
+                            glitter.style.top = y + 'px';
+                            glitter.style.background = palette[Math.floor(Math.random() * palette.length)];
+                            glitter.style.color = palette[2];
+                            glitter.style.setProperty('--dx', (Math.random() - 0.5) * 200 + 'px');
+                            glitter.style.setProperty('--dy', (Math.random() - 0.5) * 150 + 'px');
+                            fireworks.appendChild(glitter);
+                            setTimeout(() => glitter.remove(), 2000);
+                        }, j * 30);
+                    }
+                } else {
+                    // Double burst
+                    for (let layer = 0; layer < 2; layer++) {
+                        setTimeout(() => {
+                            for (let j = 0; j < 16; j++) {
+                                const angle = (j / 16) * Math.PI * 2 + (layer * Math.PI / 16);
+                                const velocity = layer === 0 ? 100 : 60;
+                                const spark = document.createElement('div');
+                                spark.className = 'spark';
+                                spark.style.left = x + 'px';
+                                spark.style.top = y + 'px';
+                                spark.style.background = palette[layer];
+                                spark.style.color = palette[layer];
+                                spark.style.setProperty('--dx', Math.cos(angle) * velocity + 'px');
+                                spark.style.setProperty('--dy', Math.sin(angle) * velocity + 'px');
+                                fireworks.appendChild(spark);
+                                setTimeout(() => spark.remove(), 1400);
+                            }
+                        }, layer * 150);
+                    }
+                }
+            }
+
+            // Launch sequence - rockets from bottom
+            for (let i = 0; i < 35; i++) {
+                const startX = Math.random() * window.innerWidth;
+                const endX = startX + (Math.random() - 0.5) * 100;
+                const endY = 100 + Math.random() * (window.innerHeight * 0.5);
+                createRocket(startX, endX, endY, i * 150);
+            }
+
+            // Additional random explosions (no rockets, just bursts)
+            for (let i = 0; i < 20; i++) {
+                setTimeout(() => {
+                    const x = Math.random() * window.innerWidth;
+                    const y = 50 + Math.random() * (window.innerHeight * 0.6);
+                    createExplosion(x, y, getRandomColors());
+                }, 2000 + i * 250);
+            }
+
+            // Grand finale - rapid fire
+            setTimeout(() => {
+                for (let i = 0; i < 15; i++) {
+                    setTimeout(() => {
+                        const x = Math.random() * window.innerWidth;
+                        const y = 50 + Math.random() * (window.innerHeight * 0.5);
+                        createExplosion(x, y, getRandomColors());
+                    }, i * 80);
+                }
+            }, 7000);
+        }
+
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+
+        // Manual fireworks button
+        document.getElementById('fireworksBtn').addEventListener('click', launchFireworks);
+    </script>
+</body>
+</html>

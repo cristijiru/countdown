@@ -465,6 +465,74 @@
             opacity: 1;
         }
 
+        /* Aurora - GPU optimized, single element with animated gradients */
+        .aurora {
+            position: absolute;
+            top: -20%;
+            left: -10%;
+            width: 120%;
+            height: 80%;
+            opacity: 0;
+            transition: opacity 3s ease;
+            pointer-events: none;
+            background:
+                /* Curtain folds - vertical bands */
+                linear-gradient(90deg,
+                    transparent 0%,
+                    rgba(0, 255, 150, 0.2) 10%,
+                    transparent 20%,
+                    rgba(0, 220, 200, 0.25) 35%,
+                    transparent 45%,
+                    rgba(100, 255, 180, 0.2) 60%,
+                    transparent 70%,
+                    rgba(0, 200, 255, 0.25) 85%,
+                    transparent 100%
+                ),
+                /* Base color */
+                linear-gradient(180deg,
+                    rgba(0, 200, 180, 0.06) 0%,
+                    rgba(0, 220, 255, 0.08) 30%,
+                    rgba(100, 150, 255, 0.06) 60%,
+                    rgba(150, 100, 255, 0.04) 100%
+                );
+            background-size: 200% 100%, 100% 100%;
+            /* Mask fades out the entire element smoothly */
+            -webkit-mask-image: linear-gradient(180deg,
+                transparent 0%,
+                black 15%,
+                black 35%,
+                transparent 70%
+            );
+            mask-image: linear-gradient(180deg,
+                transparent 0%,
+                black 15%,
+                black 35%,
+                transparent 70%
+            );
+            animation: auroraDrift 60s ease-in-out infinite, auroraPulse 15s ease-in-out infinite;
+            will-change: background-position, opacity;
+        }
+
+        .night-sky.visible .aurora {
+            opacity: 1;
+        }
+
+        @keyframes auroraDrift {
+            0%, 100% {
+                background-position: 0% 0%, 0% 0%;
+                transform: translateY(0) scaleY(1);
+            }
+            50% {
+                background-position: 100% 0%, 0% 0%;
+                transform: translateY(2%) scaleY(1.03);
+            }
+        }
+
+        @keyframes auroraPulse {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+
         .moon {
             position: absolute;
             top: 8%;
@@ -773,6 +841,7 @@
 </head>
 <body>
     <div class="night-sky" id="nightSky">
+        <div class="aurora"></div>
         <div class="moon"></div>
     </div>
     <div class="city-glow" id="cityGlow"></div>

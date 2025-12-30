@@ -291,14 +291,14 @@
             animation: windowPulse 0.8s ease-in-out infinite !important;
         }
 
-        /* Stagger the pulse colors across windows */
-        .city-skyline.lit .svg-windows .window:nth-child(7n+1) { animation-delay: 0s !important; --pulse-color-1: #ff4477; --pulse-color-2: #ffaa00; }
-        .city-skyline.lit .svg-windows .window:nth-child(7n+2) { animation-delay: 0.1s !important; --pulse-color-1: #00ff88; --pulse-color-2: #00ffff; }
-        .city-skyline.lit .svg-windows .window:nth-child(7n+3) { animation-delay: 0.2s !important; --pulse-color-1: #0088ff; --pulse-color-2: #ff00ff; }
-        .city-skyline.lit .svg-windows .window:nth-child(7n+4) { animation-delay: 0.3s !important; --pulse-color-1: #ffff00; --pulse-color-2: #ff0044; }
-        .city-skyline.lit .svg-windows .window:nth-child(7n+5) { animation-delay: 0.4s !important; --pulse-color-1: #ff00ff; --pulse-color-2: #00ff88; }
-        .city-skyline.lit .svg-windows .window:nth-child(7n+6) { animation-delay: 0.5s !important; --pulse-color-1: #00ffff; --pulse-color-2: #ffaa00; }
-        .city-skyline.lit .svg-windows .window:nth-child(7n) { animation-delay: 0.6s !important; --pulse-color-1: #ffaa00; --pulse-color-2: #0088ff; }
+        /* Stagger the pulse colors across windows - warm tones with occasional cool accent */
+        .city-skyline.lit .svg-windows .window:nth-child(7n+1) { animation-delay: 0s !important; --pulse-color-1: #ffee55; --pulse-color-2: #ffaa00; }
+        .city-skyline.lit .svg-windows .window:nth-child(7n+2) { animation-delay: 0.1s !important; --pulse-color-1: #ff8833; --pulse-color-2: #ff5522; }
+        .city-skyline.lit .svg-windows .window:nth-child(7n+3) { animation-delay: 0.2s !important; --pulse-color-1: #ffffcc; --pulse-color-2: #ffdd44; }
+        .city-skyline.lit .svg-windows .window:nth-child(7n+4) { animation-delay: 0.3s !important; --pulse-color-1: #ff6644; --pulse-color-2: #ffaa33; }
+        .city-skyline.lit .svg-windows .window:nth-child(7n+5) { animation-delay: 0.4s !important; --pulse-color-1: #ffcc22; --pulse-color-2: #ff7744; }
+        .city-skyline.lit .svg-windows .window:nth-child(7n+6) { animation-delay: 0.5s !important; --pulse-color-1: #aa88ff; --pulse-color-2: #ffbb55; }
+        .city-skyline.lit .svg-windows .window:nth-child(7n) { animation-delay: 0.6s !important; --pulse-color-1: #ffbb44; --pulse-color-2: #6699ff; }
 
         @keyframes windowPulse {
             0%, 100% {
@@ -886,6 +886,8 @@
                 <rect class="window" x="370" y="165" width="6" height="7"/>
 
                 <!-- Notre-Dame tower windows (left tower x=405-435 center=420, right tower x=495-525 center=510) -->
+                <!-- Central spire window -->
+                <rect class="window" x="463" y="50" width="4" height="6"/>
                 <!-- Small tower windows -->
                 <rect class="window" x="418" y="55" width="3" height="4"/>
                 <rect class="window" x="418" y="68" width="3" height="4"/>

@@ -852,135 +852,229 @@
             <!-- Window lights (inside SVG so they scale with buildings) -->
             <g class="svg-windows" filter="url(#windowGlow)">
                 <!-- Athenaeum windows (building: x=245-345, body y=100-180) -->
-                <rect class="window" x="265" y="115" width="4" height="5"/>
-                <rect class="window" x="280" y="115" width="4" height="5"/>
+                <!-- Cupola window -->
+                <rect class="window" x="291" y="80" width="8" height="10"/>
+                <!-- Main building windows -->
+                <rect class="window" x="253" y="115" width="4" height="5"/>
+                <rect class="window" x="275" y="115" width="4" height="5"/>
                 <rect class="window" x="295" y="115" width="4" height="5"/>
-                <rect class="window" x="310" y="115" width="4" height="5"/>
-                <rect class="window" x="325" y="115" width="4" height="5"/>
-                <rect class="window" x="265" y="132" width="4" height="5"/>
-                <rect class="window" x="280" y="132" width="4" height="5"/>
+                <rect class="window" x="315" y="115" width="4" height="5"/>
+                <rect class="window" x="335" y="115" width="4" height="5"/>
+                <rect class="window" x="253" y="132" width="4" height="5"/>
+                <rect class="window" x="275" y="132" width="4" height="5"/>
                 <rect class="window" x="295" y="132" width="4" height="5"/>
-                <rect class="window" x="310" y="132" width="4" height="5"/>
-                <rect class="window" x="325" y="132" width="4" height="5"/>
-                <rect class="window" x="265" y="150" width="4" height="5"/>
-                <rect class="window" x="295" y="150" width="4" height="5"/>
-                <rect class="window" x="325" y="150" width="4" height="5"/>
+                <rect class="window" x="315" y="132" width="4" height="5"/>
+                <rect class="window" x="335" y="132" width="4" height="5"/>
+                <!-- Grand entrance windows -->
+                <rect class="window" x="255" y="150" width="6" height="8"/>
+                <rect class="window" x="292" y="150" width="6" height="8"/>
+                <rect class="window" x="329" y="150" width="6" height="8"/>
 
-                <!-- Connecting building windows (x=350-400, body y=125-180) -->
-                <rect class="window" x="362" y="130" width="4" height="5"/>
-                <rect class="window" x="382" y="130" width="4" height="5"/>
-                <rect class="window" x="362" y="148" width="4" height="5"/>
-                <rect class="window" x="382" y="148" width="4" height="5"/>
+                <!-- Bridge section 1 lights (x=160-240, y=155) - HIDE ON MOBILE -->
+                <g class="hide-mobile">
+                    <rect class="window" x="168" y="158" width="3" height="4"/>
+                    <rect class="window" x="188" y="158" width="3" height="4"/>
+                    <rect class="window" x="208" y="158" width="3" height="4"/>
+                    <rect class="window" x="228" y="158" width="3" height="4"/>
+                </g>
 
-                <!-- Notre-Dame tower windows (left tower x=405-435, right tower x=495-525) -->
-                <rect class="window" x="415" y="55" width="4" height="5"/>
-                <rect class="window" x="415" y="70" width="4" height="5"/>
-                <rect class="window" x="505" y="55" width="4" height="5"/>
-                <rect class="window" x="505" y="70" width="4" height="5"/>
-                <!-- Notre-Dame main body windows (x=405-525, body y=90-180) -->
-                <rect class="window" x="430" y="95" width="4" height="5"/>
-                <rect class="window" x="460" y="95" width="4" height="5"/>
-                <rect class="window" x="490" y="95" width="4" height="5"/>
+                <!-- Connecting building windows (x=350-400, center=375, body y=125-180) -->
+                <rect class="window" x="356" y="130" width="3" height="4"/>
+                <rect class="window" x="390" y="130" width="3" height="4"/>
+                <rect class="window" x="355" y="148" width="4" height="5"/>
+                <rect class="window" x="389" y="148" width="4" height="5"/>
+                <rect class="window" x="370" y="165" width="6" height="7"/>
 
-                <!-- Townhouse 1 after cathedral (x=540-575, body y=130-180) -->
-                <rect class="window" x="550" y="135" width="4" height="5"/>
-                <rect class="window" x="562" y="135" width="4" height="5"/>
-                <rect class="window" x="550" y="152" width="4" height="5"/>
-                <rect class="window" x="562" y="152" width="4" height="5"/>
+                <!-- Notre-Dame tower windows (left tower x=405-435 center=420, right tower x=495-525 center=510) -->
+                <!-- Small tower windows -->
+                <rect class="window" x="418" y="55" width="3" height="4"/>
+                <rect class="window" x="418" y="68" width="3" height="4"/>
+                <rect class="window" x="508" y="55" width="3" height="4"/>
+                <rect class="window" x="508" y="68" width="3" height="4"/>
+                <!-- Notre-Dame main body windows (x=405-525, center=465, body y=90-180) -->
+                <rect class="window" x="412" y="95" width="4" height="5"/>
+                <rect class="window" x="435" y="95" width="4" height="5"/>
+                <rect class="window" x="491" y="95" width="4" height="5"/>
+                <rect class="window" x="514" y="95" width="4" height="5"/>
+                <!-- Larger nave windows -->
+                <rect class="window" x="410" y="108" width="5" height="7"/>
+                <rect class="window" x="433" y="108" width="5" height="7"/>
+                <rect class="window" x="488" y="108" width="5" height="7"/>
+                <rect class="window" x="514" y="108" width="5" height="7"/>
+                <!-- Lower windows -->
+                <rect class="window" x="410" y="125" width="4" height="5"/>
+                <rect class="window" x="430" y="125" width="4" height="5"/>
+                <rect class="window" x="490" y="125" width="4" height="5"/>
+                <rect class="window" x="514" y="125" width="4" height="5"/>
+                <!-- Bottom row - larger windows -->
+                <rect class="window" x="410" y="138" width="5" height="6"/>
+                <rect class="window" x="512" y="138" width="5" height="6"/>
 
-                <!-- Townhouse 2 after cathedral (x=580-620, body y=120-180) -->
-                <rect class="window" x="590" y="125" width="4" height="5"/>
-                <rect class="window" x="605" y="125" width="4" height="5"/>
-                <rect class="window" x="590" y="145" width="4" height="5"/>
-                <rect class="window" x="605" y="145" width="4" height="5"/>
+                <!-- Townhouse 1 after cathedral (x=540-575, center=557.5, body y=130-180) -->
+                <!-- Small upper windows -->
+                <rect class="window" x="545" y="135" width="3" height="4"/>
+                <rect class="window" x="567" y="135" width="3" height="4"/>
+                <rect class="window" x="545" y="150" width="3" height="4"/>
+                <rect class="window" x="567" y="150" width="3" height="4"/>
+                <rect class="window" x="552" y="165" width="5" height="6"/>
 
-                <!-- Bridge tower windows (x=665-695, body y=110-155) -->
-                <rect class="window" x="675" y="115" width="4" height="5"/>
-                <rect class="window" x="675" y="130" width="4" height="5"/>
+                <!-- Townhouse 2 after cathedral (x=580-620, center=600, body y=120-180) -->
+                <rect class="window" x="585" y="125" width="3" height="4"/>
+                <rect class="window" x="612" y="125" width="3" height="4"/>
+                <rect class="window" x="584" y="143" width="4" height="5"/>
+                <rect class="window" x="611" y="143" width="4" height="5"/>
+                <rect class="window" x="594" y="162" width="6" height="7"/>
 
-                <!-- Opera House windows (x=730-820, body y=105-180) -->
-                <rect class="window" x="748" y="115" width="4" height="5"/>
-                <rect class="window" x="763" y="115" width="4" height="5"/>
-                <rect class="window" x="778" y="115" width="4" height="5"/>
-                <rect class="window" x="793" y="115" width="4" height="5"/>
-                <rect class="window" x="808" y="115" width="4" height="5"/>
-                <rect class="window" x="748" y="132" width="4" height="5"/>
-                <rect class="window" x="763" y="132" width="4" height="5"/>
-                <rect class="window" x="778" y="132" width="4" height="5"/>
-                <rect class="window" x="793" y="132" width="4" height="5"/>
-                <rect class="window" x="808" y="132" width="4" height="5"/>
-                <rect class="window" x="755" y="150" width="4" height="5"/>
-                <rect class="window" x="778" y="150" width="4" height="5"/>
-                <rect class="window" x="800" y="150" width="4" height="5"/>
+                <!-- Bridge section 2 lights (x=625-725, y=155) -->
+                <rect class="window" x="633" y="158" width="3" height="4"/>
+                <rect class="window" x="658" y="158" width="3" height="4"/>
+                <rect class="window" x="708" y="158" width="3" height="4"/>
+                <rect class="window" x="718" y="158" width="3" height="4"/>
 
-                <!-- Clock Tower windows (x=930-965, body y=70-180) -->
-                <rect class="window" x="943" y="105" width="4" height="5"/>
-                <rect class="window" x="943" y="125" width="4" height="5"/>
-                <rect class="window" x="943" y="145" width="4" height="5"/>
+                <!-- Bridge tower windows (x=665-695, center=680, body y=110-155, spire top y=90-110) -->
+                <rect class="window" x="678" y="95" width="4" height="5"/>
+                <rect class="window" x="678" y="115" width="4" height="5"/>
+                <rect class="window" x="678" y="130" width="4" height="5"/>
+                <rect class="window" x="678" y="145" width="4" height="5"/>
 
-                <!-- Left side building windows (x=0-60, body y=130-180) -->
-                <rect class="window" x="15" y="135" width="4" height="5"/>
-                <rect class="window" x="30" y="135" width="4" height="5"/>
-                <rect class="window" x="45" y="135" width="4" height="5"/>
-                <rect class="window" x="15" y="152" width="4" height="5"/>
-                <rect class="window" x="30" y="152" width="4" height="5"/>
-                <rect class="window" x="45" y="152" width="4" height="5"/>
+                <!-- Opera House windows (x=730-820, center=775, body y=105-180) -->
+                <!-- Dome window -->
+                <rect class="window" x="773" y="62" width="4" height="5"/>
+                <!-- Upper floor - small windows -->
+                <rect class="window" x="738" y="115" width="3" height="4"/>
+                <rect class="window" x="757" y="115" width="3" height="4"/>
+                <rect class="window" x="774" y="115" width="3" height="4"/>
+                <rect class="window" x="793" y="115" width="3" height="4"/>
+                <rect class="window" x="812" y="115" width="3" height="4"/>
+                <!-- Middle floor - medium windows -->
+                <rect class="window" x="737" y="130" width="4" height="5"/>
+                <rect class="window" x="756" y="130" width="4" height="5"/>
+                <rect class="window" x="773" y="130" width="4" height="5"/>
+                <rect class="window" x="792" y="130" width="4" height="5"/>
+                <rect class="window" x="811" y="130" width="4" height="5"/>
+                <!-- Lower floor - large windows -->
+                <rect class="window" x="738" y="148" width="5" height="7"/>
+                <rect class="window" x="770" y="148" width="5" height="7"/>
+                <rect class="window" x="802" y="148" width="5" height="7"/>
+                <!-- Ground floor - grand entrance windows -->
+                <rect class="window" x="745" y="163" width="6" height="8"/>
+                <rect class="window" x="770" y="163" width="6" height="8"/>
+                <rect class="window" x="798" y="163" width="6" height="8"/>
 
-                <!-- Townhouse block 1 windows (x=65-110, body y=120-180) -->
-                <rect class="window" x="78" y="125" width="4" height="5"/>
-                <rect class="window" x="93" y="125" width="4" height="5"/>
-                <rect class="window" x="78" y="145" width="4" height="5"/>
-                <rect class="window" x="93" y="145" width="4" height="5"/>
+                <!-- Clock Tower windows (x=930-965, center=947.5, body y=70-180, clock at y=95) -->
+                <!-- Small window at top -->
+                <rect class="window" x="946" y="75" width="3" height="4"/>
+                <!-- Windows below clock -->
+                <rect class="window" x="945" y="110" width="4" height="5"/>
+                <rect class="window" x="945" y="125" width="4" height="5"/>
+                <rect class="window" x="945" y="140" width="4" height="5"/>
+                <!-- Larger lower windows -->
+                <rect class="window" x="944" y="156" width="5" height="6"/>
+                <rect class="window" x="944" y="168" width="5" height="6"/>
 
-                <!-- Townhouse block 2 windows (x=115-155, body y=125-180) -->
-                <rect class="window" x="125" y="130" width="4" height="5"/>
-                <rect class="window" x="140" y="130" width="4" height="5"/>
-                <rect class="window" x="125" y="148" width="4" height="5"/>
-                <rect class="window" x="140" y="148" width="4" height="5"/>
+                <!-- Left side building windows (x=0-60, center=30, body y=130-180) - HIDE ON MOBILE -->
+                <g class="hide-mobile">
+                    <rect class="window" x="8" y="135" width="4" height="5"/>
+                    <rect class="window" x="28" y="135" width="4" height="5"/>
+                    <rect class="window" x="48" y="135" width="4" height="5"/>
+                    <rect class="window" x="8" y="152" width="4" height="5"/>
+                    <rect class="window" x="28" y="152" width="4" height="5"/>
+                    <rect class="window" x="48" y="152" width="4" height="5"/>
+                    <rect class="window" x="18" y="168" width="5" height="6"/>
+                    <rect class="window" x="36" y="168" width="5" height="6"/>
+                </g>
 
-                <!-- Residential block 1 windows (x=825-880, body y=115-180) -->
-                <rect class="window" x="840" y="120" width="4" height="5"/>
-                <rect class="window" x="858" y="120" width="4" height="5"/>
-                <rect class="window" x="840" y="140" width="4" height="5"/>
-                <rect class="window" x="858" y="140" width="4" height="5"/>
-                <rect class="window" x="840" y="158" width="4" height="5"/>
-                <rect class="window" x="858" y="158" width="4" height="5"/>
+                <!-- Townhouse block 1 windows (x=65-110, center=87.5, body y=120-180) - HIDE ON MOBILE -->
+                <g class="hide-mobile">
+                    <rect class="window" x="72" y="125" width="3" height="4"/>
+                    <rect class="window" x="98" y="125" width="3" height="4"/>
+                    <rect class="window" x="72" y="145" width="4" height="5"/>
+                    <rect class="window" x="97" y="145" width="4" height="5"/>
+                    <rect class="window" x="83" y="165" width="5" height="6"/>
+                </g>
 
-                <!-- Residential block 2 windows (x=885-925, body y=125-180) -->
-                <rect class="window" x="897" y="130" width="4" height="5"/>
-                <rect class="window" x="912" y="130" width="4" height="5"/>
-                <rect class="window" x="897" y="148" width="4" height="5"/>
-                <rect class="window" x="912" y="148" width="4" height="5"/>
+                <!-- Townhouse block 2 windows (x=115-155, center=135, body y=125-180) - HIDE ON MOBILE -->
+                <g class="hide-mobile">
+                    <rect class="window" x="120" y="130" width="3" height="4"/>
+                    <rect class="window" x="146" y="130" width="3" height="4"/>
+                    <rect class="window" x="120" y="148" width="4" height="5"/>
+                    <rect class="window" x="145" y="148" width="4" height="5"/>
+                    <rect class="window" x="131" y="165" width="5" height="6"/>
+                </g>
 
-                <!-- Parliament windows (x=970-1080, body y=100-180) -->
-                <rect class="window" x="990" y="110" width="4" height="5"/>
-                <rect class="window" x="1010" y="110" width="4" height="5"/>
-                <rect class="window" x="1030" y="110" width="4" height="5"/>
-                <rect class="window" x="1050" y="110" width="4" height="5"/>
-                <rect class="window" x="990" y="130" width="4" height="5"/>
-                <rect class="window" x="1010" y="130" width="4" height="5"/>
-                <rect class="window" x="1030" y="130" width="4" height="5"/>
-                <rect class="window" x="1050" y="130" width="4" height="5"/>
-                <rect class="window" x="990" y="150" width="4" height="5"/>
-                <rect class="window" x="1010" y="150" width="4" height="5"/>
-                <rect class="window" x="1030" y="150" width="4" height="5"/>
-                <rect class="window" x="1050" y="150" width="4" height="5"/>
+                <!-- Residential block 1 windows (x=825-880, center=852.5, body y=115-180) - HIDE ON MOBILE -->
+                <g class="hide-mobile">
+                    <!-- Small apartment windows -->
+                    <rect class="window" x="832" y="120" width="3" height="4"/>
+                    <rect class="window" x="852" y="120" width="3" height="4"/>
+                    <rect class="window" x="872" y="120" width="3" height="4"/>
+                    <rect class="window" x="832" y="138" width="3" height="4"/>
+                    <rect class="window" x="852" y="138" width="3" height="4"/>
+                    <rect class="window" x="872" y="138" width="3" height="4"/>
+                    <rect class="window" x="831" y="155" width="4" height="5"/>
+                    <rect class="window" x="851" y="155" width="4" height="5"/>
+                    <rect class="window" x="871" y="155" width="4" height="5"/>
+                </g>
 
-                <!-- End building 1 windows (x=1085-1130, body y=120-180) -->
-                <rect class="window" x="1098" y="125" width="4" height="5"/>
-                <rect class="window" x="1115" y="125" width="4" height="5"/>
-                <rect class="window" x="1098" y="145" width="4" height="5"/>
-                <rect class="window" x="1115" y="145" width="4" height="5"/>
+                <!-- Residential block 2 windows (x=885-925, center=905, body y=125-180) - HIDE ON MOBILE -->
+                <g class="hide-mobile">
+                    <rect class="window" x="890" y="130" width="3" height="4"/>
+                    <rect class="window" x="916" y="130" width="3" height="4"/>
+                    <rect class="window" x="889" y="148" width="4" height="5"/>
+                    <rect class="window" x="915" y="148" width="4" height="5"/>
+                    <rect class="window" x="900" y="165" width="5" height="6"/>
+                </g>
 
-                <!-- End building 2 windows (x=1135-1175, body y=130-180) -->
-                <rect class="window" x="1145" y="135" width="4" height="5"/>
-                <rect class="window" x="1162" y="135" width="4" height="5"/>
-                <rect class="window" x="1145" y="152" width="4" height="5"/>
-                <rect class="window" x="1162" y="152" width="4" height="5"/>
+                <!-- Parliament windows (x=970-1080, center=1025, body y=100-180) - HIDE ON MOBILE -->
+                <g class="hide-mobile">
+                    <!-- Top floor - small windows -->
+                    <rect class="window" x="978" y="110" width="3" height="4"/>
+                    <rect class="window" x="1000" y="110" width="3" height="4"/>
+                    <rect class="window" x="1024" y="110" width="3" height="4"/>
+                    <rect class="window" x="1048" y="110" width="3" height="4"/>
+                    <rect class="window" x="1070" y="110" width="3" height="4"/>
+                    <!-- Middle floor - medium windows -->
+                    <rect class="window" x="977" y="128" width="4" height="5"/>
+                    <rect class="window" x="999" y="128" width="4" height="5"/>
+                    <rect class="window" x="1023" y="128" width="4" height="5"/>
+                    <rect class="window" x="1047" y="128" width="4" height="5"/>
+                    <rect class="window" x="1069" y="128" width="4" height="5"/>
+                    <!-- Lower floor - larger windows -->
+                    <rect class="window" x="976" y="146" width="5" height="6"/>
+                    <rect class="window" x="998" y="146" width="5" height="6"/>
+                    <rect class="window" x="1022" y="146" width="5" height="6"/>
+                    <rect class="window" x="1046" y="146" width="5" height="6"/>
+                    <rect class="window" x="1068" y="146" width="5" height="6"/>
+                    <!-- Ground floor - grand windows -->
+                    <rect class="window" x="985" y="164" width="6" height="8"/>
+                    <rect class="window" x="1021" y="164" width="6" height="8"/>
+                    <rect class="window" x="1057" y="164" width="6" height="8"/>
+                    <!-- Parliament small tower windows -->
+                    <rect class="window" x="980" y="88" width="4" height="5"/>
+                    <rect class="window" x="1065" y="88" width="4" height="5"/>
+                </g>
 
-                <!-- End building 3 windows (x=1180-1200, body y=125-180) -->
-                <rect class="window" x="1186" y="130" width="4" height="5"/>
-                <rect class="window" x="1186" y="148" width="4" height="5"/>
+                <!-- End buildings windows - HIDE ON MOBILE -->
+                <g class="hide-mobile">
+                    <!-- End building 1 windows (x=1085-1130, center=1107.5, body y=120-180) -->
+                    <rect class="window" x="1090" y="125" width="3" height="4"/>
+                    <rect class="window" x="1120" y="125" width="3" height="4"/>
+                    <rect class="window" x="1090" y="145" width="4" height="5"/>
+                    <rect class="window" x="1119" y="145" width="4" height="5"/>
+                    <rect class="window" x="1103" y="165" width="5" height="6"/>
+
+                    <!-- End building 2 windows (x=1135-1175, center=1155, body y=130-180) -->
+                    <rect class="window" x="1140" y="135" width="3" height="4"/>
+                    <rect class="window" x="1166" y="135" width="3" height="4"/>
+                    <rect class="window" x="1139" y="152" width="4" height="5"/>
+                    <rect class="window" x="1165" y="152" width="4" height="5"/>
+                    <rect class="window" x="1150" y="168" width="5" height="6"/>
+
+                    <!-- End building 3 windows (x=1180-1200, center=1190, body y=125-180) -->
+                    <rect class="window" x="1186" y="130" width="4" height="5"/>
+                    <rect class="window" x="1186" y="148" width="4" height="5"/>
+                    <rect class="window" x="1185" y="165" width="5" height="6"/>
+                </g>
             </g>
         </svg>
     </div>

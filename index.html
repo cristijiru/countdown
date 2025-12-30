@@ -49,13 +49,78 @@
             transition: background 0.3s ease, color 0.3s ease;
         }
 
-        .theme-toggle {
+        /* Controls Menu */
+        .controls-menu {
             position: fixed;
             top: 2rem;
             right: 2rem;
+            z-index: 20;
+        }
+
+        .menu-trigger {
+            width: 44px;
+            height: 44px;
+            background: var(--bg-secondary);
+            border-radius: 50%;
+            border: 1px solid var(--card-border);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            color: var(--text-secondary);
+        }
+
+        .menu-trigger:hover {
+            transform: scale(1.05);
+            background: var(--accent);
+            color: #fff;
+        }
+
+        .menu-trigger svg {
+            display: block;
+            transition: transform 0.3s ease;
+        }
+
+        .controls-menu:hover .menu-trigger svg,
+        .controls-menu.open .menu-trigger svg {
+            transform: rotate(90deg);
+        }
+
+        .menu-panel {
+            position: absolute;
+            top: 54px;
+            right: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            padding: 0.75rem;
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            border: 1px solid var(--card-border);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+
+        .controls-menu:hover .menu-panel,
+        .controls-menu.open .menu-panel {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .menu-row {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        /* Theme toggle inside menu */
+        .theme-toggle {
             width: 70px;
             height: 36px;
-            background: var(--bg-secondary);
+            background: var(--card-bg);
             border-radius: 18px;
             border: 1px solid var(--card-border);
             cursor: pointer;
@@ -64,6 +129,7 @@
             justify-content: space-between;
             padding: 4px 8px;
             transition: all 0.3s ease;
+            position: relative;
         }
 
         .theme-toggle:hover {
@@ -106,20 +172,20 @@
             transform: translateX(34px);
         }
 
+        /* Language toggle inside menu */
         .lang-toggle {
-            position: fixed;
-            top: 2rem;
-            right: 7rem;
             height: 36px;
-            background: var(--bg-secondary);
+            background: var(--card-bg);
             border-radius: 18px;
             border: 1px solid var(--card-border);
             cursor: pointer;
             display: flex;
             align-items: center;
+            justify-content: center;
             padding: 4px;
             gap: 0;
             transition: all 0.3s ease;
+            width: 100%;
         }
 
         .lang-toggle:hover {
@@ -608,22 +674,64 @@
             100% { transform: translateY(var(--travel)); opacity: 0; height: 20px; }
         }
 
+        /* Mute toggle inside menu */
+        .mute-toggle {
+            width: 36px;
+            height: 36px;
+            background: var(--card-bg);
+            border-radius: 50%;
+            border: 1px solid var(--card-border);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            font-size: 16px;
+            color: var(--text-secondary);
+            align-self: center;
+        }
+
+        .mute-toggle svg {
+            display: block;
+        }
+
+        .mute-toggle:hover {
+            transform: scale(1.05);
+            background: var(--accent);
+            color: #fff;
+        }
+
+        .mute-toggle .sound-on {
+            display: block;
+        }
+
+        .mute-toggle .sound-off {
+            display: none;
+        }
+
+        .mute-toggle.muted .sound-on {
+            display: none;
+        }
+
+        .mute-toggle.muted .sound-off {
+            display: block;
+        }
+
+        /* Fireworks button inside menu */
         .fireworks-btn {
-            position: fixed;
-            top: 2rem;
-            right: 13.5rem;
             padding: 0.5rem 1rem;
             height: 36px;
             font-size: 0.75rem;
             font-weight: 600;
-            background: var(--bg-secondary);
+            background: var(--card-bg);
             color: var(--text-secondary);
             border: 1px solid var(--card-border);
             border-radius: 18px;
             cursor: pointer;
             transition: all 0.3s ease;
             font-family: inherit;
-            z-index: 15;
+            white-space: nowrap;
+            width: 100%;
         }
 
         .fireworks-btn:hover {
@@ -643,9 +751,23 @@
             .number { font-size: 2.5rem; }
             .city-skyline { height: 120px; }
             .city-lights { height: 120px; }
-            .fireworks-btn { right: 1rem; top: 6rem; }
+            .controls-menu { top: 1rem; right: 1rem; }
             .city-skyline .hide-mobile { display: none; }
             .street-light::before { height: 12px; bottom: -5px; }
+        }
+
+        /* Touch device - disable hover, use tap */
+        @media (hover: none) {
+            .controls-menu:hover .menu-panel {
+                opacity: 0;
+                visibility: hidden;
+                transform: translateY(-10px);
+            }
+            .controls-menu.open .menu-panel {
+                opacity: 1;
+                visibility: visible;
+                transform: translateY(0);
+            }
         }
     </style>
 </head>
@@ -655,18 +777,40 @@
     </div>
     <div class="city-glow" id="cityGlow"></div>
 
-    <button class="fireworks-btn" id="fireworksBtn">Fireworks</button>
-
-    <div class="lang-toggle" id="langToggle">
-        <span class="lang-option active" data-lang="en">EN</span>
-        <span class="lang-option" data-lang="ro">RO</span>
+    <div class="controls-menu" id="controlsMenu">
+        <button class="menu-trigger" id="menuTrigger" aria-label="Settings">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+        </button>
+        <div class="menu-panel">
+            <button class="fireworks-btn" id="fireworksBtn">Fireworks</button>
+            <div class="menu-row">
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                    <span class="toggle-icon sun-icon">&#9728;</span>
+                    <span class="toggle-icon moon-icon">&#9790;</span>
+                    <div class="toggle-thumb"></div>
+                </button>
+                <button class="mute-toggle" id="muteToggle" aria-label="Toggle sound">
+                    <svg class="sound-on" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                        <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+                    </svg>
+                    <svg class="sound-off" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                        <line x1="23" y1="9" x2="17" y2="15"></line>
+                        <line x1="17" y1="9" x2="23" y2="15"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="lang-toggle" id="langToggle">
+                <span class="lang-option active" data-lang="en">EN</span>
+                <span class="lang-option" data-lang="ro">RO</span>
+            </div>
+        </div>
     </div>
-
-    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
-        <span class="toggle-icon sun-icon">&#9728;</span>
-        <span class="toggle-icon moon-icon">&#9790;</span>
-        <div class="toggle-thumb"></div>
-    </button>
 
     <h1 id="subtitle">Countdown to</h1>
     <div class="main-title" id="mainTitle">New Year 2026</div>
@@ -1101,6 +1245,41 @@
         const audioLoop = document.getElementById('audioLoop');
         const audioClimax = document.getElementById('audioClimax');
         let audioStarted = false;
+        let isMuted = localStorage.getItem('muted') === 'true';
+
+        // Mute toggle
+        const muteToggle = document.getElementById('muteToggle');
+
+        function updateMuteState() {
+            audioLoop.muted = isMuted;
+            audioClimax.muted = isMuted;
+            muteToggle.classList.toggle('muted', isMuted);
+            localStorage.setItem('muted', isMuted);
+        }
+
+        // Initialize mute state
+        updateMuteState();
+
+        muteToggle.addEventListener('click', () => {
+            isMuted = !isMuted;
+            updateMuteState();
+        });
+
+        // Menu toggle for mobile (tap to open/close)
+        const controlsMenu = document.getElementById('controlsMenu');
+        const menuTrigger = document.getElementById('menuTrigger');
+
+        menuTrigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            controlsMenu.classList.toggle('open');
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!controlsMenu.contains(e.target)) {
+                controlsMenu.classList.remove('open');
+            }
+        });
 
         function startBackgroundMusic() {
             if (!audioStarted) {

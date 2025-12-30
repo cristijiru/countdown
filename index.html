@@ -1046,7 +1046,8 @@
                 hours: 'Hours',
                 minutes: 'Minutes',
                 seconds: 'Seconds',
-                happyNewYear: 'Happy New Year!'
+                happyNewYear: 'Happy New Year!',
+                fireworks: 'Fireworks'
             },
             ro: {
                 subtitle: 'Numărătoare inversă până la',
@@ -1055,7 +1056,8 @@
                 hours: 'Ore',
                 minutes: 'Minute',
                 seconds: 'Secunde',
-                happyNewYear: 'La mulți ani!'
+                happyNewYear: 'La mulți ani!',
+                fireworks: 'Artificii'
             }
         };
 
@@ -1071,6 +1073,7 @@
             document.getElementById('labelHours').textContent = t.hours;
             document.getElementById('labelMinutes').textContent = t.minutes;
             document.getElementById('labelSeconds').textContent = t.seconds;
+            document.getElementById('fireworksBtn').textContent = t.fireworks;
 
             document.querySelectorAll('.lang-option').forEach(opt => {
                 opt.classList.toggle('active', opt.dataset.lang === lang);

@@ -285,11 +285,32 @@
         .svg-windows .window:nth-child(even) { animation-delay: 1.5s; }
         .svg-windows .window:nth-child(3n) { animation-delay: 0.7s; }
 
-        /* Lit state during fireworks */
+        /* Lit state during fireworks - colorful pulsating windows */
         .city-skyline.lit .svg-windows .window {
             opacity: 1 !important;
-            fill: #ffffee !important;
-            animation: none !important;
+            animation: windowPulse 0.8s ease-in-out infinite !important;
+        }
+
+        /* Stagger the pulse colors across windows */
+        .city-skyline.lit .svg-windows .window:nth-child(7n+1) { animation-delay: 0s !important; --pulse-color-1: #ff4477; --pulse-color-2: #ffaa00; }
+        .city-skyline.lit .svg-windows .window:nth-child(7n+2) { animation-delay: 0.1s !important; --pulse-color-1: #00ff88; --pulse-color-2: #00ffff; }
+        .city-skyline.lit .svg-windows .window:nth-child(7n+3) { animation-delay: 0.2s !important; --pulse-color-1: #0088ff; --pulse-color-2: #ff00ff; }
+        .city-skyline.lit .svg-windows .window:nth-child(7n+4) { animation-delay: 0.3s !important; --pulse-color-1: #ffff00; --pulse-color-2: #ff0044; }
+        .city-skyline.lit .svg-windows .window:nth-child(7n+5) { animation-delay: 0.4s !important; --pulse-color-1: #ff00ff; --pulse-color-2: #00ff88; }
+        .city-skyline.lit .svg-windows .window:nth-child(7n+6) { animation-delay: 0.5s !important; --pulse-color-1: #00ffff; --pulse-color-2: #ffaa00; }
+        .city-skyline.lit .svg-windows .window:nth-child(7n) { animation-delay: 0.6s !important; --pulse-color-1: #ffaa00; --pulse-color-2: #0088ff; }
+
+        @keyframes windowPulse {
+            0%, 100% {
+                fill: var(--pulse-color-1, #ff4477);
+                opacity: 1;
+                filter: drop-shadow(0 0 4px var(--pulse-color-1, #ff4477));
+            }
+            50% {
+                fill: var(--pulse-color-2, #ffaa00);
+                opacity: 0.8;
+                filter: drop-shadow(0 0 8px var(--pulse-color-2, #ffaa00));
+            }
         }
 
         .city-lights {
@@ -1251,10 +1272,6 @@
             nightSkyEl.classList.add('visible');
             cityGlow.classList.add('visible');
 
-            // Light up the city
-            citySkyline.classList.add('lit');
-            cityLightsEl.classList.add('lit');
-
             const colors = [
                 ['#ff0044', '#ff4477', '#ffaacc'],
                 ['#00ff88', '#44ffaa', '#aaffdd'],
@@ -1436,6 +1453,10 @@
             fireworksStartTimeout = setTimeout(() => {
                 // Guard against stopped fireworks
                 if (!fireworksActive) return;
+
+                // Light up the city (colorful pulsating windows) when fireworks actually start
+                citySkyline.classList.add('lit');
+                cityLightsEl.classList.add('lit');
 
                 // Continuous rockets
                 fireworksRocketInterval = setInterval(() => {

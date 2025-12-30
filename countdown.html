@@ -1120,7 +1120,11 @@
         // Countdown logic - dynamically target next January 1st
         const targetDate = new Date(targetYear, 0, 1, 0, 0, 0).getTime();
 
+        // Handy for debugging specific dates
+        // const targetDate = new Date(2025, 11, 30, 12, 49, 0).getTime();
+
         let hasReachedZero = false;
+        let hasMusicStarted = false;
 
         function updateCountdown() {
             const now = new Date().getTime();
@@ -1136,6 +1140,13 @@
                 document.getElementById('hours').textContent = String(hours).padStart(2, '0');
                 document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
                 document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+
+                // Start climax music and fireworks sequence 4 seconds before midnight
+                if (difference <= FIREWORKS_DELAY && !hasMusicStarted) {
+                    hasMusicStarted = true;
+                    playClimaxMusic();
+                    launchFireworks();
+                }
             } else {
                 if (!hasReachedZero) {
                     hasReachedZero = true;
@@ -1149,13 +1160,15 @@
             }
         }
 
-        function launchFireworks() {
+        function launchFireworks(fromButton = false) {
             const fireworks = document.getElementById('fireworks');
             const citySkyline = document.querySelector('.city-skyline');
             const cityLightsEl = document.getElementById('cityLights');
 
-            // Play climax music
-            playClimaxMusic();
+            // Play climax music only if triggered by button (countdown triggers it 4s early)
+            if (fromButton) {
+                playClimaxMusic();
+            }
 
             // Switch to dark mode for the fireworks show
             const html = document.documentElement;
@@ -1392,7 +1405,7 @@
         setInterval(updateCountdown, 1000);
 
         // Manual fireworks button
-        document.getElementById('fireworksBtn').addEventListener('click', launchFireworks);
+        document.getElementById('fireworksBtn').addEventListener('click', () => launchFireworks(true));
     </script>
 </body>
 </html>

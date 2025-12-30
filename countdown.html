@@ -967,9 +967,51 @@
 
     <div class="fireworks" id="fireworks"></div>
 
+    <!-- Audio elements -->
+    <audio id="audioLoop" loop preload="auto">
+        <source src="hedwig_loop.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="audioClimax" preload="auto">
+        <source src="hedwig_climax.mp3" type="audio/mpeg">
+    </audio>
+
     <script>
         // Dynamic year calculation
         const targetYear = new Date().getFullYear() + 1;
+
+        // Audio controls
+        const audioLoop = document.getElementById('audioLoop');
+        const audioClimax = document.getElementById('audioClimax');
+        let audioStarted = false;
+
+        function startBackgroundMusic() {
+            if (!audioStarted) {
+                audioLoop.volume = 0.5;
+                audioLoop.play().catch(() => {});
+                audioStarted = true;
+            }
+        }
+
+        function playClimaxMusic() {
+            audioLoop.pause();
+            audioLoop.currentTime = 0;
+            audioClimax.currentTime = 0;
+            audioClimax.volume = 0.7;
+            audioClimax.play().catch(() => {});
+        }
+
+        // When climax ends, restart the loop
+        audioClimax.addEventListener('ended', () => {
+            audioLoop.play().catch(() => {});
+        });
+
+        // Fireworks timing constants
+        const FIREWORKS_DELAY = 4000;      // 4 seconds delay before fireworks start
+        const FIREWORKS_DURATION = 60000;  // 60 seconds of fireworks
+
+        // Start music on first user interaction (required by browsers)
+        document.addEventListener('click', startBackgroundMusic, { once: true });
+        document.addEventListener('keydown', startBackgroundMusic, { once: true });
 
         // Create street lights on poles between buildings
         const cityLights = document.getElementById('cityLights');
@@ -1112,6 +1154,9 @@
             const citySkyline = document.querySelector('.city-skyline');
             const cityLightsEl = document.getElementById('cityLights');
 
+            // Play climax music
+            playClimaxMusic();
+
             // Switch to dark mode for the fireworks show
             const html = document.documentElement;
             const wasDarkMode = html.getAttribute('data-theme') === 'dark';
@@ -1129,13 +1174,6 @@
             citySkyline.classList.add('lit');
             cityLightsEl.classList.add('lit');
 
-            // Turn off lights after fireworks end (around 12 seconds), keep dark mode
-            setTimeout(() => {
-                citySkyline.classList.remove('lit');
-                cityLightsEl.classList.remove('lit');
-                nightSkyEl.classList.remove('visible');
-                cityGlow.classList.remove('visible');
-            }, 12000);
             const colors = [
                 ['#ff0044', '#ff4477', '#ffaacc'],
                 ['#00ff88', '#44ffaa', '#aaffdd'],
@@ -1313,33 +1351,41 @@
                 }
             }
 
-            // Launch sequence - rockets from bottom
-            for (let i = 0; i < 35; i++) {
-                const startX = Math.random() * window.innerWidth;
-                const endX = startX + (Math.random() - 0.5) * 100;
-                const endY = 100 + Math.random() * (window.innerHeight * 0.5);
-                createRocket(startX, endX, endY, i * 150);
-            }
+            // Start fireworks after delay
+            setTimeout(() => {
+                // Continuous rockets
+                const rocketInterval = setInterval(() => {
+                    const startX = Math.random() * window.innerWidth;
+                    const endX = startX + (Math.random() - 0.5) * 100;
+                    const endY = 100 + Math.random() * (window.innerHeight * 0.5);
+                    createRocket(startX, endX, endY, 0);
+                }, 200);
 
-            // Additional random explosions (no rockets, just bursts)
-            for (let i = 0; i < 20; i++) {
-                setTimeout(() => {
+                // Continuous explosions
+                const explosionInterval = setInterval(() => {
                     const x = Math.random() * window.innerWidth;
                     const y = 50 + Math.random() * (window.innerHeight * 0.6);
                     createExplosion(x, y, getRandomColors());
-                }, 2000 + i * 250);
-            }
+                }, 400);
 
-            // Grand finale - rapid fire
-            setTimeout(() => {
+                // Initial burst of rockets
                 for (let i = 0; i < 15; i++) {
-                    setTimeout(() => {
-                        const x = Math.random() * window.innerWidth;
-                        const y = 50 + Math.random() * (window.innerHeight * 0.5);
-                        createExplosion(x, y, getRandomColors());
-                    }, i * 80);
+                    const startX = Math.random() * window.innerWidth;
+                    const endX = startX + (Math.random() - 0.5) * 100;
+                    const endY = 100 + Math.random() * (window.innerHeight * 0.5);
+                    createRocket(startX, endX, endY, i * 100);
                 }
-            }, 7000);
+
+                // End fireworks after duration
+                setTimeout(() => {
+                    clearInterval(rocketInterval);
+                    clearInterval(explosionInterval);
+                    citySkyline.classList.remove('lit');
+                    cityLightsEl.classList.remove('lit');
+                    nightSkyEl.classList.remove('visible');
+                    cityGlow.classList.remove('visible');
+                }, FIREWORKS_DURATION);
+            }, FIREWORKS_DELAY);
         }
 
         updateCountdown();

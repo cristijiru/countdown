@@ -8,8 +8,8 @@ Single-file HTML/CSS/JS countdown to January 1st of the next year, featuring a E
 ### Single File Structure
 Everything is in `index.html` - no external dependencies, no build step. Sections:
 1. CSS (lines 7-628)
-2. HTML (lines 630-970)
-3. JavaScript (lines 978-1490)
+2. HTML (lines 630-1065)
+3. JavaScript (lines 1067-1418)
 
 ### Dynamic Year Targeting
 ```javascript
@@ -68,19 +68,48 @@ Two audio tracks:
 - Handles browser autoplay restrictions gracefully
 - Loop restarts automatically after climax ends
 
+**Audio Crossfade:**
+When transitioning to climax music:
+1. Loop fades out over 2 seconds
+2. After 1 second delay, climax starts
+3. Climax fades in over 2 seconds
+4. Creates smooth crossfade with brief quiet moment in middle
+
 ### City Skyline (SVG)
 - ViewBox: `0 0 1200 180`
 - Uses `preserveAspectRatio="xMidYMax slice"` to anchor at bottom
 - Buildings include: Romanian Athenaeum, Notre-Dame cathedral, Opera House, Clock Tower, Parliament
-- Two bridges with arches
+- Two bridges with arches and lights
 - Fixed height: 180px (120px on mobile)
 
 ### Window Lights
-- Positioned using percentage (x) and pixels from bottom (y)
-- **Critical**: Windows must be centered within building rectangular bodies, not in triangular roofs
-- Conversion: SVG x-coordinate / 12 = percentage
-- Animate with `svgTwinkle` in dark mode
-- During fireworks: colorful pulsating animation (see Fireworks section)
+SVG rect elements inside `.svg-windows` group with `windowGlow` filter.
+
+**Positioning:**
+- Use SVG coordinates directly (viewBox 0-1200 for x, 0-180 for y)
+- Windows must be centered within building rectangular bodies, not in triangular roofs
+- Extend windows close to building edges for realistic coverage
+
+**Size Variations:**
+- Small (3x4): Tower tops, upper floors, apartments
+- Medium (4x5): Standard windows
+- Large (5x6, 5x7): Lower floors of grand buildings
+- Grand (6x8): Ground floor entrances (Athenaeum, Opera, Parliament)
+
+**Special Windows:**
+- Athenaeum cupola: Large 8x10 window
+- Opera House dome: Window at y=62
+- Notre-Dame central spire: Window at y=50
+- Bridge lights: Small 3x4 lights along bridge spans
+
+**Mobile Visibility:**
+Windows for hidden buildings are wrapped in `<g class="hide-mobile">`:
+- Left side buildings, Townhouse blocks, Bridge section 1
+- Residential blocks, Parliament, End buildings
+
+**Animation:**
+- Normal mode: `svgTwinkle` animation (3-4s cycle) in dark mode
+- Fireworks mode: `windowPulse` animation (0.8s cycle) with warm colors
 
 ### Street Lights
 - 5 poles positioned between buildings at: 13%, 44.5%, 60.5%, 77.5%, 90.5%
@@ -97,7 +126,7 @@ Two audio tracks:
 
 #### Timing Constants
 ```javascript
-const FIREWORKS_DELAY = 4000;      // 4 seconds delay before fireworks start
+const FIREWORKS_DELAY = 5000;      // 5 seconds (syncs with second 4 of climax, accounting for 1s audio delay)
 const FIREWORKS_DURATION = 60000;  // 60 seconds of fireworks
 ```
 
@@ -126,16 +155,18 @@ let fireworksEndTimeout = null;
 Clicking fireworks button while show is running will stop and restart cleanly.
 
 #### Fireworks Sequence
-1. **Immediately**: Night sky (moon/stars) and city glow appear
-2. **After 4s delay**:
-   - `.lit` class added to city (triggers colorful window pulsating)
+1. **Immediately**: Night sky (moon/stars) and city glow appear, loop music starts fading out
+2. **After 1s**: Climax music starts fading in
+3. **After 5s delay**:
+   - `.lit` class added to city (triggers warm window pulsating)
    - Continuous rockets every 200ms
    - Continuous explosions every 400ms
    - Initial burst of 15 rockets
-3. **After 60s**: `stopFireworks()` called, city returns to normal
+   - Syncs with second 4 of climax music
+4. **After 60s**: `stopFireworks()` called, city returns to normal
 
-#### Colorful Window Pulsating
-During fireworks (`.lit` state), windows pulsate with colors:
+#### Warm Window Pulsating
+During fireworks (`.lit` state), windows pulsate with warm colors:
 ```css
 .city-skyline.lit .svg-windows .window {
     animation: windowPulse 0.8s ease-in-out infinite;
@@ -143,15 +174,26 @@ During fireworks (`.lit` state), windows pulsate with colors:
 ```
 - 7 different color pairs assigned via `nth-child(7n+x)`
 - Staggered animation delays (0s to 0.6s)
-- Colors include: pink/orange, green/cyan, blue/magenta, yellow/red, etc.
+- **Warm palette**: yellows, oranges, reds, warm whites
+- **Occasional cool accents**: 2 of 7 combinations include purple or blue
 - Drop-shadow glow effect matches current color
+
+Color pairs:
+1. Yellow (#ffee55) to Orange (#ffaa00)
+2. Orange (#ff8833) to Red-orange (#ff5522)
+3. Warm white (#ffffcc) to Yellow (#ffdd44)
+4. Red-orange (#ff6644) to Orange (#ffaa33)
+5. Yellow (#ffcc22) to Orange-red (#ff7744)
+6. Purple (#aa88ff) to Warm orange (#ffbb55) - cool accent
+7. Orange (#ffbb44) to Blue (#6699ff) - cool accent
 
 ### Fireworks Behavior
 - **Auto-switches to dark mode** when launched
 - Night sky and city glow appear immediately (sets mood)
-- Windows start colorful pulsating when fireworks actually begin (after 4s delay)
+- Audio crossfades smoothly (loop out, climax in)
+- Windows start warm pulsating when fireworks begin (after 5s delay, synced with music)
 - City skyline opacity increases (`.lit` class)
-- All windows illuminate with animated colors
+- All windows illuminate with animated warm colors
 - Effects last 60 seconds, then city returns to normal (dark mode persists)
 
 ## Positioning Quirks
@@ -164,15 +206,16 @@ During fireworks (`.lit` state), windows pulsate with colors:
 All have `height: 36px` for alignment.
 
 ### Window Positioning
-Windows use hybrid units:
-- `x`: percentage of container width
-- `y`: pixels from bottom of 180px container
+Windows use SVG coordinates directly:
+- `x`: 0-1200 (SVG viewBox width)
+- `y`: 0-180 (SVG viewBox height, 0 at top)
 
 To add windows to a building:
 1. Find building rect in SVG (e.g., `x="245" width="100"`)
-2. Calculate center: (245 + 100/2) / 12 = 24.6%
+2. Calculate center: 245 + 100/2 = 295
 3. Position windows symmetrically around center
 4. Keep y values within building's rectangular body height
+5. Use appropriate size based on floor (smaller up top, larger at bottom)
 
 ### Z-Index Stack
 ```
@@ -185,17 +228,18 @@ To add windows to a building:
 
 ## Mobile Responsiveness
 Breakpoint at 600px:
-- Smaller title and numbers
+- Smaller title (2.5rem) and numbers (2.5rem)
+- **Countdown cards closer together**: gap reduced to 0.75rem, padding to 1rem/1.25rem, min-width to 70px
 - City skyline reduced to 120px
 - Fireworks button moves to `top: 6rem; right: 1rem`
 - Several buildings hidden via `.hide-mobile` class:
   - Left side buildings
-  - Townhouse block
+  - Townhouse blocks
   - Bridge section 1
-  - Residential block
+  - Residential blocks
   - Parliament style building
   - End buildings
-- Corresponding window lights also hidden (marked with `.hide-mobile` class based on x% position ranges)
+- Corresponding window lights wrapped in `<g class="hide-mobile">` groups
 
 ## State Persistence
 - `localStorage.theme`: 'dark' or 'light'
@@ -205,16 +249,21 @@ Breakpoint at 600px:
 - Time boxes float: 4s cycle, staggered by 0.15s
 - Window twinkle: 3-4s cycle (normal), 0.8s cycle (fireworks pulsate)
 - Star twinkle: 2s cycle
-- Firework show duration: 60 seconds total (after 4s delay)
+- Audio crossfade: 2s fade out, 1s delay, 2s fade in
+- Firework show duration: 60 seconds total (after 5s delay)
 - Rocket travel: 0.6-1.0s
 - Spark animations: 0.8-1.4s
 
 ## Common Pitfalls
 
 1. **Window alignment**: Always check windows are within rectangular building bodies, not roofs
-2. **Button spacing**: Three buttons at top-right need consistent gaps (~0.5rem visual spacing)
-3. **Dark mode dependency**: Stars, moon, street lights, and window glow all depend on `[data-theme="dark"]`
-4. **Fireworks cleanup**: Use `stopFireworks()` for proper cleanup; don't create orphan intervals
-5. **Mobile layout**: Controls stack differently; test at 600px breakpoint
-6. **Audio autoplay**: Browsers block autoplay; music only starts after user interaction
-7. **Fireworks spam**: Button clicks while show is running will restart cleanly (not stack)
+2. **Window sizing**: Use varied sizes - small at top, large at bottom for realism
+3. **Window coverage**: Extend windows close to building edges
+4. **Mobile windows**: Wrap windows for hidden buildings in `<g class="hide-mobile">`
+5. **Button spacing**: Three buttons at top-right need consistent gaps (~0.5rem visual spacing)
+6. **Dark mode dependency**: Stars, moon, street lights, and window glow all depend on `[data-theme="dark"]`
+7. **Fireworks cleanup**: Use `stopFireworks()` for proper cleanup; don't create orphan intervals
+8. **Mobile layout**: Controls stack differently; test at 600px breakpoint
+9. **Audio autoplay**: Browsers block autoplay; music only starts after user interaction
+10. **Fireworks spam**: Button clicks while show is running will restart cleanly (not stack)
+11. **Audio sync**: FIREWORKS_DELAY accounts for 1s audio delay to sync with climax second 4

@@ -987,8 +987,13 @@
         function startBackgroundMusic() {
             if (!audioStarted) {
                 audioLoop.volume = 0.5;
-                audioLoop.play().catch(() => {});
-                audioStarted = true;
+                audioLoop.play()
+                    .then(() => {
+                        audioStarted = true;
+                    })
+                    .catch(() => {
+                        // Don't mark as started if play failed - allow retry
+                    });
             }
         }
 
@@ -1002,6 +1007,7 @@
 
         // When climax ends, restart the loop
         audioClimax.addEventListener('ended', () => {
+            audioLoop.volume = 0.5;
             audioLoop.play().catch(() => {});
         });
 
@@ -1009,9 +1015,17 @@
         const FIREWORKS_DELAY = 4000;      // 4 seconds delay before fireworks start
         const FIREWORKS_DURATION = 60000;  // 60 seconds of fireworks
 
-        // Start music on first user interaction (required by browsers)
-        document.addEventListener('click', startBackgroundMusic, { once: true });
-        document.addEventListener('keydown', startBackgroundMusic, { once: true });
+        // Start music on user interaction (required by browsers)
+        // Don't use { once: true } - keep trying until music actually starts
+        function tryStartMusic(e) {
+            startBackgroundMusic();
+            if (audioStarted) {
+                document.removeEventListener('click', tryStartMusic);
+                document.removeEventListener('keydown', tryStartMusic);
+            }
+        }
+        document.addEventListener('click', tryStartMusic);
+        document.addEventListener('keydown', tryStartMusic);
 
         // Create street lights on poles between buildings
         const cityLights = document.getElementById('cityLights');
@@ -1163,7 +1177,58 @@
             }
         }
 
+        // Fireworks state management
+        let fireworksActive = false;
+        let fireworksRocketInterval = null;
+        let fireworksExplosionInterval = null;
+        let fireworksStartTimeout = null;
+        let fireworksEndTimeout = null;
+
+        function stopFireworks() {
+            // Clear all intervals and timeouts
+            if (fireworksRocketInterval) {
+                clearInterval(fireworksRocketInterval);
+                fireworksRocketInterval = null;
+            }
+            if (fireworksExplosionInterval) {
+                clearInterval(fireworksExplosionInterval);
+                fireworksExplosionInterval = null;
+            }
+            if (fireworksStartTimeout) {
+                clearTimeout(fireworksStartTimeout);
+                fireworksStartTimeout = null;
+            }
+            if (fireworksEndTimeout) {
+                clearTimeout(fireworksEndTimeout);
+                fireworksEndTimeout = null;
+            }
+
+            // Clean up visual effects
+            const citySkyline = document.querySelector('.city-skyline');
+            const cityLightsEl = document.getElementById('cityLights');
+            const nightSkyEl = document.getElementById('nightSky');
+            const cityGlow = document.getElementById('cityGlow');
+
+            citySkyline.classList.remove('lit');
+            cityLightsEl.classList.remove('lit');
+            nightSkyEl.classList.remove('visible');
+            cityGlow.classList.remove('visible');
+
+            // Clear all firework elements
+            const fireworksEl = document.getElementById('fireworks');
+            fireworksEl.innerHTML = '';
+
+            fireworksActive = false;
+        }
+
         function launchFireworks(fromButton = false) {
+            // If fireworks already running, stop them first
+            if (fireworksActive) {
+                stopFireworks();
+            }
+
+            fireworksActive = true;
+
             const fireworks = document.getElementById('fireworks');
             const citySkyline = document.querySelector('.city-skyline');
             const cityLightsEl = document.getElementById('cityLights');
@@ -1368,9 +1433,13 @@
             }
 
             // Start fireworks after delay
-            setTimeout(() => {
+            fireworksStartTimeout = setTimeout(() => {
+                // Guard against stopped fireworks
+                if (!fireworksActive) return;
+
                 // Continuous rockets
-                const rocketInterval = setInterval(() => {
+                fireworksRocketInterval = setInterval(() => {
+                    if (!fireworksActive) return;
                     const startX = Math.random() * window.innerWidth;
                     const endX = startX + (Math.random() - 0.5) * 100;
                     const endY = 100 + Math.random() * (window.innerHeight * 0.5);
@@ -1378,7 +1447,8 @@
                 }, 200);
 
                 // Continuous explosions
-                const explosionInterval = setInterval(() => {
+                fireworksExplosionInterval = setInterval(() => {
+                    if (!fireworksActive) return;
                     const x = Math.random() * window.innerWidth;
                     const y = 50 + Math.random() * (window.innerHeight * 0.6);
                     createExplosion(x, y, getRandomColors());
@@ -1393,13 +1463,8 @@
                 }
 
                 // End fireworks after duration
-                setTimeout(() => {
-                    clearInterval(rocketInterval);
-                    clearInterval(explosionInterval);
-                    citySkyline.classList.remove('lit');
-                    cityLightsEl.classList.remove('lit');
-                    nightSkyEl.classList.remove('visible');
-                    cityGlow.classList.remove('visible');
+                fireworksEndTimeout = setTimeout(() => {
+                    stopFireworks();
                 }, FIREWORKS_DURATION);
             }, FIREWORKS_DELAY);
         }

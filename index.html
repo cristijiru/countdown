@@ -1115,11 +1115,48 @@
         }
 
         function playClimaxMusic() {
-            audioLoop.pause();
-            audioLoop.currentTime = 0;
-            audioClimax.currentTime = 0;
-            audioClimax.volume = 0.7;
-            audioClimax.play().catch(() => {});
+            // Fade out the loop over 2 seconds
+            const fadeOutDuration = 2000;
+            const fadeSteps = 30;
+            const fadeInterval = fadeOutDuration / fadeSteps;
+            const volumeStep = audioLoop.volume / fadeSteps;
+
+            let currentStep = 0;
+            const fadeOut = setInterval(() => {
+                currentStep++;
+                audioLoop.volume = Math.max(0, audioLoop.volume - volumeStep);
+
+                if (currentStep >= fadeSteps) {
+                    clearInterval(fadeOut);
+                    audioLoop.pause();
+                    audioLoop.currentTime = 0;
+                    audioLoop.volume = 0.5; // Reset volume for next time
+                }
+            }, fadeInterval);
+
+            // Start climax with fade in after 1 second delay
+            setTimeout(() => {
+                audioClimax.currentTime = 0;
+                audioClimax.volume = 0;
+                audioClimax.play().catch(() => {});
+
+                const fadeInDuration = 2000;
+                const fadeInSteps = 30;
+                const fadeInInterval = fadeInDuration / fadeInSteps;
+                const targetVolume = 0.7;
+                const volumeInStep = targetVolume / fadeInSteps;
+
+                let fadeInStep = 0;
+                const fadeIn = setInterval(() => {
+                    fadeInStep++;
+                    audioClimax.volume = Math.min(targetVolume, audioClimax.volume + volumeInStep);
+
+                    if (fadeInStep >= fadeInSteps) {
+                        clearInterval(fadeIn);
+                        audioClimax.volume = targetVolume;
+                    }
+                }, fadeInInterval);
+            }, 1000);
         }
 
         // When climax ends, restart the loop
@@ -1129,7 +1166,7 @@
         });
 
         // Fireworks timing constants
-        const FIREWORKS_DELAY = 4000;      // 4 seconds delay before fireworks start
+        const FIREWORKS_DELAY = 5000;      // 5 seconds delay (syncs with second 4 of climax, accounting for 1s audio delay)
         const FIREWORKS_DURATION = 60000;  // 60 seconds of fireworks
 
         // Start music on user interaction (required by browsers)

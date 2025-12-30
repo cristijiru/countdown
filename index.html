@@ -509,12 +509,12 @@
                 black 35%,
                 transparent 70%
             );
-            animation: auroraDrift 60s ease-in-out infinite, auroraPulse 15s ease-in-out infinite;
             will-change: background-position, opacity;
         }
 
-        .night-sky.visible .aurora {
+        .night-sky.aurora-visible .aurora {
             opacity: 1;
+            animation: auroraDrift 60s ease-in-out infinite, auroraPulse 15s ease-in-out infinite;
         }
 
         @keyframes auroraDrift {
@@ -1615,6 +1615,7 @@
             citySkyline.classList.remove('lit');
             cityLightsEl.classList.remove('lit');
             nightSkyEl.classList.remove('visible');
+            nightSkyEl.classList.remove('aurora-visible');
             cityGlow.classList.remove('visible');
 
             // Clear all firework elements
@@ -1836,9 +1837,10 @@
                 // Guard against stopped fireworks
                 if (!fireworksActive) return;
 
-                // Light up the city (colorful pulsating windows) when fireworks actually start
+                // Light up the city (colorful pulsating windows) and aurora when fireworks actually start
                 citySkyline.classList.add('lit');
                 cityLightsEl.classList.add('lit');
+                nightSkyEl.classList.add('aurora-visible');
 
                 // Continuous rockets
                 fireworksRocketInterval = setInterval(() => {

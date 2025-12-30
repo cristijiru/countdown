@@ -57,6 +57,35 @@ docker-compose -f docker-compose.dev.yml up --build
 - Persisted to `localStorage.lang`
 - Translations object contains: subtitle, mainTitle, days, hours, minutes, seconds, happyNewYear, fireworks
 
+### Controls Menu
+All controls are grouped in a collapsible menu (top-right gear icon):
+- **Desktop**: Expands on hover
+- **Mobile/Touch**: Expands on tap, closes when tapping outside
+
+**Menu Layout:**
+```
+┌─────────────────────┐
+│     Fireworks       │  ← full width button
+├───────────┬─────────┤
+│  ☀️ 🌙   │   🔊    │  ← theme + mute toggle
+├───────────┴─────────┤
+│      EN | RO        │  ← language toggle
+└─────────────────────┘
+```
+
+**CSS Classes:**
+- `.controls-menu` - Container with `z-index: 20`
+- `.menu-trigger` - Gear icon button (44x44px)
+- `.menu-panel` - Dropdown panel with controls
+- `.menu-row` - Horizontal row for theme + mute
+- `.open` class toggles visibility on touch devices
+
+### Mute Toggle
+- Persisted to `localStorage.muted`
+- Mutes/unmutes both `audioLoop` and `audioClimax`
+- SVG speaker icons (with sound waves / with X)
+- State managed via `isMuted` variable and `updateMuteState()` function
+
 ### Audio System
 Two audio tracks:
 - `hedwig_loop.mp3` - Background loop music
@@ -198,12 +227,11 @@ Color pairs:
 
 ## Positioning Quirks
 
-### Top-Right Controls Layout
-```
-[Fireworks] [EN|RO] [Light/Dark Toggle]
-   13.5rem    7rem        2rem (from right)
-```
-All have `height: 36px` for alignment.
+### Controls Menu Position
+- Fixed position: `top: 2rem; right: 2rem`
+- Mobile: `top: 1rem; right: 1rem`
+- Gear icon trigger: 44x44px
+- Menu panel appears below trigger on hover/tap
 
 ### Window Positioning
 Windows use SVG coordinates directly:
@@ -223,7 +251,7 @@ To add windows to a building:
 1  - city-skyline
 2  - city-lights (windows, street lights)
 10 - fireworks
-15 - fireworks button
+20 - controls-menu
 ```
 
 ## Mobile Responsiveness
@@ -231,7 +259,8 @@ Breakpoint at 600px:
 - Smaller title (2.5rem) and numbers (2.5rem)
 - **Countdown cards closer together**: gap reduced to 0.75rem, padding to 1rem/1.25rem, min-width to 70px
 - City skyline reduced to 120px
-- Fireworks button moves to `top: 6rem; right: 1rem`
+- Controls menu moves to `top: 1rem; right: 1rem`
+- Touch devices: hover disabled, tap-to-toggle via `.open` class
 - Several buildings hidden via `.hide-mobile` class:
   - Left side buildings
   - Townhouse blocks
@@ -244,6 +273,7 @@ Breakpoint at 600px:
 ## State Persistence
 - `localStorage.theme`: 'dark' or 'light'
 - `localStorage.lang`: 'en' or 'ro'
+- `localStorage.muted`: 'true' or 'false'
 
 ## Animation Timings
 - Time boxes float: 4s cycle, staggered by 0.15s
@@ -260,10 +290,11 @@ Breakpoint at 600px:
 2. **Window sizing**: Use varied sizes - small at top, large at bottom for realism
 3. **Window coverage**: Extend windows close to building edges
 4. **Mobile windows**: Wrap windows for hidden buildings in `<g class="hide-mobile">`
-5. **Button spacing**: Three buttons at top-right need consistent gaps (~0.5rem visual spacing)
+5. **Controls menu**: All controls are in collapsible menu; hover on desktop, tap on mobile
 6. **Dark mode dependency**: Stars, moon, street lights, and window glow all depend on `[data-theme="dark"]`
 7. **Fireworks cleanup**: Use `stopFireworks()` for proper cleanup; don't create orphan intervals
-8. **Mobile layout**: Controls stack differently; test at 600px breakpoint
+8. **Mobile layout**: Menu uses tap-to-toggle; test at 600px breakpoint
 9. **Audio autoplay**: Browsers block autoplay; music only starts after user interaction
 10. **Fireworks spam**: Button clicks while show is running will restart cleanly (not stack)
 11. **Audio sync**: FIREWORKS_DELAY accounts for 1s audio delay to sync with climax second 4
+12. **Mute state**: Persists across page reloads; affects both loop and climax audio

@@ -110,6 +110,14 @@ Breakpoint at 600px:
 - Smaller title and numbers
 - City skyline reduced to 120px
 - Fireworks button moves to `top: 6rem; right: 1rem`
+- Several buildings hidden via `.hide-mobile` class:
+  - Left side buildings
+  - Townhouse block
+  - Bridge section 1
+  - Residential block
+  - Parliament style building
+  - End buildings
+- Corresponding window lights also hidden (marked with `.hide-mobile` class based on x% position ranges)
 
 ## State Persistence
 - `localStorage.theme`: 'dark' or 'light'
